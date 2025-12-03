@@ -1,5 +1,5 @@
 import { readFileSync } from "fs";
-import Rss from "../../src/crawler/Rss";
+import Rss from "../../../src/crawler/Rss";
 import path from "path";
 import { describe, it, expect, beforeEach, vi, Mock } from "vitest";
 
