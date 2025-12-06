@@ -7,6 +7,8 @@ abstract class CrawlerBase {
   get items(): unknown {
     return null;
   }
+  abstract saveChannel(): Promise<unknown>;
+  abstract saveArticles(channel_id: number): Promise<unknown>;
 }
 
 export default CrawlerBase;

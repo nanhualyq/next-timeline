@@ -2,9 +2,13 @@ import { XMLParser } from "fast-xml-parser";
 import CrawlerBase from "./CrawlerBase";
 import { get, omit } from "lodash-es";
 import z from "zod";
+import { db } from "../db";
+import { channelTable } from "../db/schema";
+import { insertArticles } from "../db/article";
 
 const FeedZod = z.looseObject({
   title: z.string(),
+  link: z.string(),
   description: z.string(),
 });
 
@@ -41,6 +45,7 @@ class Rss extends CrawlerBase {
   }
   feed2channel(feed: unknown) {
     return Object.assign({}, feed, {
+      link: this.url,
       description: get(feed, "subtitle"),
     });
   }
@@ -64,6 +69,20 @@ class Rss extends CrawlerBase {
         pubDate: get(entry, "published"),
       });
     });
+  }
+  saveChannel() {
+    return db.insert(channelTable).values(this.feed);
+  }
+  saveArticles(channel_id: number) {
+    return insertArticles(
+      this.items.map((item) => {
+        return Object.assign({}, item, {
+          channel_id,
+          content: item.description,
+          pub_time: item.pubDate,
+        });
+      })
+    );
   }
 }
 
