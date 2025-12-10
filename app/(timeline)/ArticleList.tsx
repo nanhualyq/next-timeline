@@ -1,6 +1,6 @@
 "use client";
 import { useEventListener, useInfiniteScroll, useKeyPress } from "ahooks";
-import { ArticleListItem, getArticleList } from "./actions";
+import { ArticleListItem, getArticleList } from "../actions";
 import { useEffect, useRef, useState } from "react";
 import styles from "./articleList.module.css";
 import { useRouter, useSelectedLayoutSegment } from "next/navigation";

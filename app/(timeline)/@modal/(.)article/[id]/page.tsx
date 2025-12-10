@@ -1,4 +1,4 @@
-import Article from "@/app/article/[id]/page";
+import Article from "@/app/(timeline)/article/[id]/page";
 import { Modal } from "antd";
 import CloseButton from "./CloseButton";
 

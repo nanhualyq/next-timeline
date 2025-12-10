@@ -1,5 +1,5 @@
 "use client";
-import AddForm from "@/app/channel/add/AddForm";
+import AddForm from "@/app/(timeline)/channel/add/AddForm";
 import { Modal } from "antd";
 import { useRouter } from "next/navigation";
 
