@@ -1,0 +1,51 @@
+.ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  height: 200px;
+  overflow: auto;
+}
+
+.li {
+  border: 1px solid #eee;
+  cursor: pointer;
+
+  display: grid;
+  grid-template-columns: 128px 1fr;
+  grid-template-rows: repeat(3, auto);
+  grid-template-areas:
+    "cover title"
+    "cover summary"
+    "cover others";
+  grid-column-gap: 8px;
+  grid-row-gap: 0px;
+}
+.li-read {
+  /* filter: grayscale(100%); */
+  opacity: 0.7;
+}
+.li_active {
+  border: 1px solid #000;
+}
+
+.cover {
+  grid-area: cover;
+}
+.cover img {
+  max-width: 100%;
+  max-height: 6rem;
+}
+.title {
+  grid-area: title;
+}
+.summary {
+  grid-area: summary;
+  max-height: 3em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.others {
+  grid-area: others;
+  display: flex;
+  gap: 8px;
+}

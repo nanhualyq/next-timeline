@@ -18,6 +18,7 @@ export const articleTable = sqliteTable("article", {
   summary: text(),
   content: text(),
   pub_time: text(),
+  cover: text(),
   read: integer({ mode: "boolean" }),
   star: integer({ mode: "boolean" }),
 });

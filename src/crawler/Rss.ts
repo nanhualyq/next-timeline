@@ -4,7 +4,8 @@ import { get, omit } from "lodash-es";
 import z from "zod";
 import { db } from "../db";
 import { channelTable } from "../db/schema";
-import { insertArticles } from "../db/article";
+import { ArticleInsert, insertArticles } from "../db/article";
+import { JSDOM } from "jsdom";
 
 const FeedZod = z.looseObject({
   title: z.string(),
@@ -21,6 +22,7 @@ const ItemsZod = z.array(
     pubDate: z.string(),
   })
 );
+type Item = z.infer<typeof ItemsZod.element>;
 
 class Rss extends CrawlerBase {
   private xmlObject: unknown;
@@ -76,14 +78,41 @@ class Rss extends CrawlerBase {
   saveArticles(channel_id: number) {
     return insertArticles(
       this.items.map((item) => {
-        return Object.assign({}, item, {
-          channel_id,
-          content: item.description,
-          pub_time: item.pubDate,
-        });
+        const article = new ItemFactor(item).article;
+        article.channel_id = channel_id;
+        return article;
       })
     );
   }
 }
 
 export default Rss;
+
+export class ItemFactor {
+  constructor(private item: Item) {}
+  get article(): ArticleInsert {
+    return {
+      channel_id: 0,
+      ...this.item,
+      pub_time: this.item.pubDate,
+      summary: this.getSummary(),
+      content: this.getContent(),
+      cover: this.getCover(),
+    };
+  }
+  getSummary(): string {
+    if (this.item["content:encoded"]) {
+      return this.item.description;
+    }
+    return this.item["summary"] as string;
+  }
+  getContent(): string {
+    return (this.item["content:encoded"] as string) || this.item.description;
+  }
+  getCover(): string | null | undefined {
+    const dom = new JSDOM();
+    const parser = new dom.window.DOMParser();
+    const doc = parser.parseFromString(this.getContent(), "text/html");
+    return doc.querySelector("img")?.src;
+  }
+}
