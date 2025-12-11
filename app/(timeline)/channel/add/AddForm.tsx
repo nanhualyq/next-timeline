@@ -23,7 +23,7 @@ export default function AddForm() {
   return (
     <>
       {contextHolder}
-      <Form onFinish={run}>
+      <Form onFinish={run} style={{ padding: "1rem" }}>
         <Form.Item label="url" name="url" rules={[{ required: true }]}>
           <Input />
         </Form.Item>

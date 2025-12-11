@@ -3,12 +3,17 @@ import { useEventListener, useInfiniteScroll, useKeyPress } from "ahooks";
 import { ArticleListItem, getArticleList } from "../../actions";
 import { useEffect, useRef, useState } from "react";
 import styles from "./articleList.module.css";
-import { useRouter, useSelectedLayoutSegment } from "next/navigation";
+import {
+  useRouter,
+  useSearchParams,
+  useSelectedLayoutSegment,
+} from "next/navigation";
 import StarToggle, { STAR_EVENT_NAME } from "../article/[id]/StarToggle";
 import Pubtime from "../article/[id]/Pubtime";
 import Link from "next/link";
 import { produce } from "immer";
 import { invoke } from "lodash-es";
+import { Divider, Result } from "antd";
 
 interface Props {
   initData: ArticleListItem[];
@@ -19,7 +24,8 @@ const limit = 10;
 export default function ArticleList(props: Props) {
   const router = useRouter();
   const ulRef = useRef<HTMLUListElement>(null);
-  const { data, loadingMore, mutate } = useInfiniteScroll(
+  const params = useSearchParams();
+  const { data, loadingMore, mutate, loading } = useInfiniteScroll(
     async (d) => {
       if (!d) {
         return {
@@ -30,6 +36,7 @@ export default function ArticleList(props: Props) {
       const list = await getArticleList({
         limit: limit + 1,
         offset: d.list.length,
+        ...params,
       });
       return {
         list: list.slice(0, limit),
@@ -135,6 +142,10 @@ export default function ArticleList(props: Props) {
     ulRef?.current?.querySelector(`.${styles["li_active"]}`)?.scrollIntoView();
   }, [active]);
 
+  if (!loading && (!data || !data.list.length)) {
+    return <Result status="info" title="No More Articles!" />;
+  }
+
   return (
     <ul className={styles.ul} ref={ulRef}>
       {data?.list.map((item, index) => {
@@ -180,7 +191,7 @@ export default function ArticleList(props: Props) {
           </li>
         );
       })}
-      {loadingMore && <p>Loading...</p>}
+      {loadingMore && <Divider>Text</Divider>}
     </ul>
   );
 }

@@ -4,7 +4,7 @@ import Rss from "@/src/crawler/Rss";
 import { db } from "@/src/db";
 import { ArticleSelect } from "@/src/db/article";
 import { articleTable, channelTable } from "@/src/db/schema";
-import { eq, getTableColumns } from "drizzle-orm";
+import { and, eq, getTableColumns, SQLWrapper } from "drizzle-orm";
 import { omit } from "lodash-es";
 import z from "zod";
 
@@ -32,10 +32,21 @@ export async function getArticleList(
   options: unknown = {}
 ): Promise<ArticleListItem[]> {
   const schema = z.object({
-    limit: z.number().default(10),
+    limit: z.number().default(50),
     offset: z.number().default(0),
+    star: z.string().optional(),
+    read: z.string().optional(),
   });
-  const { limit, offset } = schema.parse(options);
+  const { limit, offset, star, read } = schema.parse(options);
+
+  const conditions: SQLWrapper[] = [];
+
+  if (star) {
+    conditions.push(eq(articleTable.star, true));
+  }
+  if (read !== "all") {
+    conditions.push(eq(articleTable.read, read === "old"));
+  }
 
   return db
     .select({
@@ -45,7 +56,8 @@ export async function getArticleList(
     .from(articleTable)
     .leftJoin(channelTable, eq(articleTable.channel_id, channelTable.id))
     .limit(limit)
-    .offset(offset);
+    .offset(offset)
+    .where(and(...conditions));
 }
 
 export async function getArticle(id: number) {

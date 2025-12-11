@@ -1,18 +1,26 @@
-import Link from "next/link";
-import { Button } from "antd";
+import { Divider, Layout } from "antd";
+import Sider from "antd/es/layout/Sider";
+import { Content } from "antd/es/layout/layout";
+import styles from "./layout.module.css";
+import SideMenu from "./_components/SideMenu";
+import ChannelTree from "./_components/ChannelTree";
 
 interface Props {
   children: React.ReactNode;
   modal: React.ReactNode;
 }
 
-export default async function Layout({ children, modal }: Props) {
+export default async function TimelineLayout({ children, modal }: Props) {
   return (
     <>
-      <Link href="/channel/add">
-        <Button>add feed</Button>
-      </Link>
-      {children}
+      <Layout className={styles.root}>
+        <Sider theme="light">
+          <SideMenu />
+          <Divider size="small" />
+          <ChannelTree />
+        </Sider>
+        <Content>{children}</Content>
+      </Layout>
       {modal}
     </>
   );

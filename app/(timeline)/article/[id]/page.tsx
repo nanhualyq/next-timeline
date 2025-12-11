@@ -4,6 +4,7 @@ import styles from "./page.module.css";
 import StarToggle from "./StarToggle";
 import Pubtime from "./Pubtime";
 import Link from "next/link";
+import { Divider } from "antd";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -30,6 +31,7 @@ export default function Article({ params, height, inModal }: Props) {
           dangerouslySetInnerHTML={{ __html: article.content + "" }}
         ></div>
       </div>
+      <Divider size="small" />
       <div className={styles.footer}>
         <StarToggle article={article} inModal={inModal} />
         <Pubtime time={article.pub_time || ""} />

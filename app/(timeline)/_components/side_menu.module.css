@@ -1,0 +1,16 @@
+.root {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.root li {
+  padding: 1rem;
+}
+.root a {
+  color: #333;
+}
+.active {
+  background-color: var(--ant-layout-color-bg-body);
+  font-weight: bold;
+  color: var(--ant-color-link);
+}

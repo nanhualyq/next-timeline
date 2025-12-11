@@ -1,7 +1,7 @@
 .root {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100%;
   padding: 1rem;
   box-sizing: border-box;
 }
@@ -14,9 +14,6 @@
   height: auto;
 }
 .footer {
-  border-top: 1px solid #666;
-  margin-top: 8px;
-  padding-top: 4px;
   display: flex;
-  gap: 4px;
+  gap: 8px;
 }

@@ -1,0 +1,8 @@
+.root {
+  padding: 0 8px;
+}
+.c_ul {
+  list-style: none;
+  margin-left: 0;
+  padding-left: 1rem;
+}
