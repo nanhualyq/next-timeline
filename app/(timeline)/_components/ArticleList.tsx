@@ -1,11 +1,11 @@
 "use client";
 import { useEventListener, useInfiniteScroll, useKeyPress } from "ahooks";
-import { ArticleListItem, getArticleList } from "../actions";
+import { ArticleListItem, getArticleList } from "../../actions";
 import { useEffect, useRef, useState } from "react";
 import styles from "./articleList.module.css";
 import { useRouter, useSelectedLayoutSegment } from "next/navigation";
-import StarToggle, { STAR_EVENT_NAME } from "./article/[id]/StarToggle";
-import Pubtime from "./article/[id]/Pubtime";
+import StarToggle, { STAR_EVENT_NAME } from "../article/[id]/StarToggle";
+import Pubtime from "../article/[id]/Pubtime";
 import Link from "next/link";
 import { produce } from "immer";
 import { invoke } from "lodash-es";
@@ -118,10 +118,16 @@ export default function ArticleList(props: Props) {
         setActive(data?.list?.length - 1);
       }
     },
+    f() {
+      const starEl = ulRef?.current?.querySelector(
+        `.${styles["li_active"]} .anticon-star`
+      ) as HTMLSpanElement;
+      starEl?.click();
+    },
   };
 
   useKeyPress(
-    ["j", "k", "uparrow", "downarrow", "enter", "home", "end"],
+    ["j", "k", "uparrow", "downarrow", "enter", "home", "end", "f"],
     (e, key) => invoke(keyCallbackMap, key)
   );
 

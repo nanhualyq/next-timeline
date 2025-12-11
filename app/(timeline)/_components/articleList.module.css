@@ -2,14 +2,17 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  height: 200px;
+  height: 100%;
   overflow: auto;
+  padding: 8px;
+  box-sizing: border-box;
 }
 
 .li {
-  border: 1px solid #eee;
   cursor: pointer;
-
+  min-height: 6rem;
+  padding: 8px;
+  background-color: #fff;
   display: grid;
   grid-template-columns: 128px 1fr;
   grid-template-rows: repeat(3, auto);
@@ -20,12 +23,16 @@
   grid-column-gap: 8px;
   grid-row-gap: 0px;
 }
+.li:not(:last-child) {
+  margin-bottom: 1rem;
+}
 .li-read {
-  /* filter: grayscale(100%); */
-  opacity: 0.7;
+  filter: grayscale(50%);
+  opacity: 0.8;
+  background-color: #eee;
 }
 .li_active {
-  border: 1px solid #000;
+  border: 2px solid #000;
 }
 
 .cover {
@@ -47,5 +54,6 @@
 .others {
   grid-area: others;
   display: flex;
+  align-items: center;
   gap: 8px;
 }
