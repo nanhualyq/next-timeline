@@ -1,14 +1,16 @@
-abstract class CrawlerBase {
-  constructor(protected url: string) {}
-  abstract crawler(): Promise<unknown>;
-  get feed(): unknown {
-    return null;
-  }
-  get items(): unknown {
-    return null;
-  }
-  abstract saveChannel(): Promise<unknown>;
-  abstract saveArticles(channel_id: number): Promise<unknown>;
-}
+import { channelTable } from "../db/schema";
 
-export default CrawlerBase;
+type Channel = typeof channelTable.$inferSelect;
+type EmptyChannel = {
+  id?: number;
+  type: string;
+  link: string;
+};
+export type inputChannel = Channel | EmptyChannel;
+
+export default abstract class CrawlerBase {
+  constructor(public channel: inputChannel) {}
+  abstract download(): Promise<unknown>;
+  abstract saveChannel(): void;
+  abstract saveArticles(): void;
+}

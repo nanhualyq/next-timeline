@@ -24,7 +24,14 @@ export default function AddForm() {
     <>
       {contextHolder}
       <Form onFinish={run} style={{ padding: "1rem" }}>
-        <Form.Item label="url" name="url" rules={[{ required: true }]}>
+        <Form.Item name="type" initialValue="rss" hidden>
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="feed address"
+          name="link"
+          rules={[{ required: true }]}
+        >
           <Input />
         </Form.Item>
         <Form.Item label={null}>

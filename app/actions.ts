@@ -1,6 +1,7 @@
 "use server";
 
-import Rss from "@/src/crawler/Rss";
+import { inputChannel } from "@/src/crawler/CrawlerBase";
+import { crawlerFactor } from "@/src/crawler/factor";
 import { db } from "@/src/db";
 import { ArticleSelect } from "@/src/db/article";
 import { articleTable, channelTable } from "@/src/db/schema";
@@ -8,17 +9,11 @@ import { and, eq, getTableColumns, SQLWrapper } from "drizzle-orm";
 import { omit } from "lodash-es";
 import z from "zod";
 
-export async function postFeed(o: unknown) {
-  const schema = z.object({
-    url: z.string(),
-  });
-  const { url } = schema.parse(o);
-  const rss = new Rss(url);
-  await rss.crawler();
-  const channel = await rss.saveChannel();
-  if (channel.lastInsertRowid) {
-    await rss.saveArticles(Number(channel.lastInsertRowid));
-  }
+export async function postFeed(o: inputChannel) {
+  const crawler = crawlerFactor(o);
+  await crawler.download();
+  await crawler.saveChannel();
+  await crawler.saveArticles();
   return {
     success: true,
   };
