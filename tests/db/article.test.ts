@@ -1,3 +1,4 @@
+import { getArticleList } from "@/app/actions";
 import { db } from "@/src/db";
 import { insertArticles } from "@/src/db/article";
 import { articleTable, channelTable } from "@/src/db/schema";
@@ -18,6 +19,7 @@ beforeAll(async () => {
   await db.insert(channelTable).values({
     title: "test",
     link: "test",
+    type: "rss",
   });
 });
 afterAll(async () => {
@@ -32,25 +34,48 @@ afterEach(async () => {
 });
 
 describe("article table", () => {
-  it("insertArticles only one", async () => {
-    await insertArticles([{ channel_id: 1, title: "test", link: "test" }]);
-    const res = await db.select().from(articleTable);
-    expect(res).toHaveLength(1);
+  describe("getArticleList", () => {
+    it("sort by pub_time desc", async () => {
+      await insertArticles([
+        {
+          channel_id: 1,
+          title: "test",
+          link: "test",
+          pub_time: "2024-01-01T00:00:00.000Z",
+        },
+        {
+          channel_id: 1,
+          title: "test2",
+          link: "test2",
+          pub_time: "2024-01-02T00:00:00.000Z",
+        },
+      ]);
+      const res = await getArticleList();
+      expect(res[0].article.title).toBe("test2");
+    });
   });
-  it("insertArticles many", async () => {
-    await insertArticles([
-      { channel_id: 1, title: "test", link: "test" },
-      { channel_id: 1, title: "test2", link: "test2" },
-    ]);
-    expect(await db.select().from(articleTable)).toHaveLength(2);
-  });
-  it("insert same link should skip", async () => {
-    await expect(
-      insertArticles([
+
+  describe("insertArticles", () => {
+    it("insertArticles only one", async () => {
+      await insertArticles([{ channel_id: 1, title: "test", link: "test" }]);
+      const res = await db.select().from(articleTable);
+      expect(res).toHaveLength(1);
+    });
+    it("insertArticles many", async () => {
+      await insertArticles([
         { channel_id: 1, title: "test", link: "test" },
-        { channel_id: 1, title: "test2", link: "test" },
-      ])
-    ).resolves.not.toThrow();
-    expect(await db.select().from(articleTable)).toHaveLength(1);
+        { channel_id: 1, title: "test2", link: "test2" },
+      ]);
+      expect(await db.select().from(articleTable)).toHaveLength(2);
+    });
+    it("insert same link should skip", async () => {
+      await expect(
+        insertArticles([
+          { channel_id: 1, title: "test", link: "test" },
+          { channel_id: 1, title: "test2", link: "test" },
+        ])
+      ).resolves.not.toThrow();
+      expect(await db.select().from(articleTable)).toHaveLength(1);
+    });
   });
 });

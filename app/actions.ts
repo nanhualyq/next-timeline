@@ -5,7 +5,7 @@ import { crawlerFactor } from "@/src/crawler/factor";
 import { db } from "@/src/db";
 import { ArticleSelect } from "@/src/db/article";
 import { articleTable, channelTable } from "@/src/db/schema";
-import { and, eq, getTableColumns, SQLWrapper } from "drizzle-orm";
+import { and, desc, eq, getTableColumns, SQLWrapper } from "drizzle-orm";
 import { omit } from "lodash-es";
 import z from "zod";
 
@@ -52,7 +52,8 @@ export async function getArticleList(
     .leftJoin(channelTable, eq(articleTable.channel_id, channelTable.id))
     .limit(limit)
     .offset(offset)
-    .where(and(...conditions));
+    .where(and(...conditions))
+    .orderBy(desc(articleTable.pub_time));
 }
 
 export async function getArticle(id: number) {
