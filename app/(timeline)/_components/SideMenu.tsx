@@ -16,7 +16,9 @@ export default function SideMenu() {
       <Link href="/" accessKey="a">
         <li
           className={highlightCss(
-            pathname === "/" && !searchParams.get("star")
+            pathname === "/" &&
+              !searchParams.get("star") &&
+              !searchParams.get("channel")
           )}
         >
           <HomeFilled /> Timeline

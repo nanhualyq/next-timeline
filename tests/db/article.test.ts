@@ -16,11 +16,18 @@ import {
 beforeAll(async () => {
   execSync("npx drizzle-kit push");
   await db.delete(channelTable);
-  await db.insert(channelTable).values({
-    title: "test",
-    link: "test",
-    type: "rss",
-  });
+  await db.insert(channelTable).values([
+    {
+      title: "test",
+      link: "test",
+      type: "rss",
+    },
+    {
+      title: "test2",
+      link: "test2",
+      type: "rss",
+    },
+  ]);
 });
 afterAll(async () => {
   execSync("rm test.db");
@@ -51,6 +58,22 @@ describe("article table", () => {
         },
       ]);
       const res = await getArticleList();
+      expect(res.list[0].article.title).toBe("test2");
+    });
+    it("filter by channel", async () => {
+      await insertArticles([
+        {
+          channel_id: 1,
+          title: "test",
+          link: "test",
+        },
+        {
+          channel_id: 2,
+          title: "test2",
+          link: "test2",
+        },
+      ]);
+      const res = await getArticleList({ channel: "2" });
       expect(res.list[0].article.title).toBe("test2");
     });
   });

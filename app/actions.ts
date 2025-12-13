@@ -19,7 +19,7 @@ export async function postFeed(o: inputChannel) {
   };
 }
 
-export interface ArticleListItem {
+interface ArticleListItem {
   article: Omit<ArticleSelect, "content">;
   channel: typeof channelTable.$inferSelect | null;
 }
@@ -35,8 +35,9 @@ export async function getArticleList(
     offset: z.number().default(0),
     star: z.string().optional(),
     read: z.string().optional(),
+    channel: z.string().optional(),
   });
-  const { limit, offset, star, read } = schema.parse(options);
+  const { limit, offset, star, read, channel } = schema.parse(options);
 
   const conditions: SQLWrapper[] = [];
 
@@ -45,6 +46,9 @@ export async function getArticleList(
   }
   if (read !== "all") {
     conditions.push(eq(articleTable.read, read === "old"));
+  }
+  if (channel) {
+    conditions.push(eq(articleTable.channel_id, +channel));
   }
 
   const list = await db

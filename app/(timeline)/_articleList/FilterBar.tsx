@@ -7,7 +7,9 @@ export default function FilterBar() {
   const router = useRouter();
 
   function onChange(e: RadioChangeEvent) {
-    router.push(`/?read=${e.target.value}`);
+    const nsp = new URLSearchParams(sp);
+    nsp.set("read", e.target.value);
+    router.push(`?${nsp}`);
   }
 
   return (

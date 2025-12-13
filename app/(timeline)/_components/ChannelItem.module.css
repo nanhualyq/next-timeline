@@ -1,0 +1,12 @@
+.root {
+  display: flex;
+  gap: 4px;
+  padding: 8px 0;
+}
+.root a {
+  color: black;
+}
+
+.active a {
+  color: var(--ant-color-link);
+}
