@@ -34,18 +34,10 @@ export default class RssCrawler extends CrawlerBase {
     return channelSchema.parse({
       type: "rss",
       title: G(item, "title"),
-      link: this.parseChannelLink(item) || this.channel.link,
+      link: this.channel.link,
       description: G(item, "description") || G(item, "subtitle"),
       icon: "",
     });
-  }
-
-  private parseChannelLink(item: unknown) {
-    const link = this.getXmlValue(item, "link");
-    if (typeof link === "string") {
-      return link;
-    }
-    return "";
   }
 
   parseArticles() {
@@ -64,13 +56,23 @@ export default class RssCrawler extends CrawlerBase {
         content: content,
         pub_time: this.parseArticlePubtime(item),
         cover: this.parseArticleCover(content),
-        author: get(item, "author.name"),
+        author: this.parseArticleAuthor(item),
       });
       articles.push(article);
     }
     return articles;
   }
 
+  private parseArticleAuthor(item: unknown) {
+    const author =
+      get(item, "author.name") ||
+      get(item, "dc:creator") ||
+      this.getXmlValue(item, "creator") ||
+      this.getXmlValue(item, "author");
+    if (typeof author === "string") {
+      return author;
+    }
+  }
   private parseArticleContent(item: unknown) {
     const G = this.getXmlValue;
     return (

@@ -13,7 +13,7 @@ describe("RssCrawler", () => {
 
   beforeEach(() => {
     // 在每個測試案例之前，重新初始化 RssCrawler 實例
-    rssCrawler = new RssCrawler({ link: "", type: "" });
+    rssCrawler = new RssCrawler({ link: "fakeLink", type: "" });
     // 將全局的 fetch 替換為我們的 mockFetch
     global.fetch = mockFetch;
   });
@@ -83,7 +83,7 @@ describe("RssCrawler", () => {
       expect(channelInfo).toEqual({
         type: "rss",
         title: "My RSS Feed Title",
-        link: "http://example.com/rss",
+        link: "fakeLink",
         description: "A description of my RSS feed",
         icon: "",
       });
@@ -107,7 +107,7 @@ describe("RssCrawler", () => {
       expect(channelInfo).toEqual({
         type: "rss",
         title: "My RSS Feed Title Direct",
-        link: "http://example.com/rss-direct",
+        link: "fakeLink",
         description: "A direct description of my RSS feed",
         icon: "",
       });
@@ -129,7 +129,7 @@ describe("RssCrawler", () => {
       expect(channelInfo).toEqual({
         type: "rss", // 注意：目前 parseChannel 硬編碼為 "rss" 類型
         title: "My Atom Feed Title",
-        link: "", // 預期連結為物件
+        link: "fakeLink", // 預期連結為物件
         description: "A subtitle for my Atom feed",
         icon: "",
       });
@@ -157,7 +157,7 @@ describe("RssCrawler", () => {
       expect(channelInfo).toEqual({
         type: "rss",
         title: "My Atom Feed Title",
-        link: "", // 預期連結為物件
+        link: "fakeLink", // 預期連結為物件
         description: "A subtitle for my Atom feed",
         icon: "",
       });
@@ -180,7 +180,7 @@ describe("RssCrawler", () => {
       expect(channelInfo).toEqual({
         type: "rss",
         title: "Atom Title",
-        link: "http://example.com/atom-both",
+        link: "fakeLink",
         description: "Explicit description",
         icon: "",
       });
@@ -203,7 +203,7 @@ describe("RssCrawler", () => {
       expect(channelInfo).toEqual({
         type: "rss",
         title: "Feed without description",
-        link: "http://example.com/no-desc",
+        link: "fakeLink",
         description: undefined, // 如果找不到，getXmlValue 會返回 undefined
         icon: "",
       });
@@ -387,6 +387,26 @@ describe("RssCrawler", () => {
       const articles = rssCrawler.parseArticles();
 
       expect(articles[0].channel_id).toBe(1);
+    });
+
+    it("dc:creator", () => {
+      rssCrawler.xmlObject = {
+        rss: {
+          channel: {
+            item: [
+              {
+                title: "",
+                link: "http://example.com/rss-1",
+                "dc:creator": "test",
+              },
+            ],
+          },
+        },
+      };
+
+      const articles = rssCrawler.parseArticles();
+
+      expect(articles[0].author).toBe("test");
     });
   });
 
