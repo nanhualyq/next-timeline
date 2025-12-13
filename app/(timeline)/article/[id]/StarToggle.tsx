@@ -1,13 +1,15 @@
 "use client";
 import { patchArticle } from "@/app/actions";
-import { ArticleSelect } from "@/src/db/article";
 import { LoadingOutlined, StarFilled, StarOutlined } from "@ant-design/icons";
 import { useBoolean, useRequest } from "ahooks";
 import { Modal } from "antd";
 import { useEffect } from "react";
 
 interface Props {
-  article: ArticleSelect;
+  article: {
+    id: number;
+    star: boolean | null;
+  };
   inModal?: boolean;
 }
 

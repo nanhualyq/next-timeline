@@ -1,6 +1,6 @@
 "use client";
 import { useEventListener, useInfiniteScroll, useKeyPress } from "ahooks";
-import { ArticleListItem, getArticleList } from "../../actions";
+import { ArticleListReturn, getArticleList } from "../../actions";
 import { useEffect, useRef, useState } from "react";
 import styles from "./articleList.module.css";
 import {
@@ -16,38 +16,32 @@ import { invoke } from "lodash-es";
 import { Divider, Result } from "antd";
 
 interface Props {
-  initData: ArticleListItem[];
+  initData: ArticleListReturn;
 }
 
-const limit = 10;
+const limit = 20;
 
 export default function ArticleList(props: Props) {
   const router = useRouter();
   const ulRef = useRef<HTMLUListElement>(null);
   const params = useSearchParams();
-  const { data, loadingMore, mutate, loading } = useInfiniteScroll(
-    async (d) => {
-      if (!d) {
-        return {
-          list: props.initData,
-          hasMore: true,
-        };
+  const { data, loadingMore, mutate, loading } =
+    useInfiniteScroll<ArticleListReturn>(
+      async (d) => {
+        if (!d) {
+          return props.initData;
+        }
+        return getArticleList({
+          limit,
+          offset: d.list.length,
+          ...params,
+        });
+      },
+      {
+        target: ulRef,
+        isNoMore: (data) => !data?.hasMore,
       }
-      const list = await getArticleList({
-        limit: limit + 1,
-        offset: d.list.length,
-        ...params,
-      });
-      return {
-        list: list.slice(0, limit),
-        hasMore: list.length > limit,
-      };
-    },
-    {
-      target: ulRef,
-      isNoMore: (data) => !data?.hasMore,
-    }
-  );
+    );
 
   const segment = useSelectedLayoutSegment("modal");
 
@@ -191,7 +185,7 @@ export default function ArticleList(props: Props) {
           </li>
         );
       })}
-      {loadingMore && <Divider>Text</Divider>}
+      {loadingMore && <Divider>Loading More...</Divider>}
     </ul>
   );
 }

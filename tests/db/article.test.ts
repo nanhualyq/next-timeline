@@ -51,7 +51,7 @@ describe("article table", () => {
         },
       ]);
       const res = await getArticleList();
-      expect(res[0].article.title).toBe("test2");
+      expect(res.list[0].article.title).toBe("test2");
     });
   });
 

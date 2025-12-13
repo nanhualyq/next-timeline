@@ -1,7 +1,7 @@
 import { formatDistance } from "date-fns";
 
 interface Props {
-  time: string;
+  time: string | null;
 }
 
 export default function Pubtime({ time }: Props) {
