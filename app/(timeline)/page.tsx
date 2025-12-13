@@ -1,6 +1,6 @@
-import ArticleList from "./_components/ArticleList";
+import ArticleList from "./_articleList";
 import { getArticleList } from "../actions";
-import FilterBar from "./_components/FilterBar";
+import FilterBar from "./_articleList/FilterBar";
 
 interface Props {
   searchParams: Promise<Record<string, string>>;

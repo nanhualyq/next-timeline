@@ -2,7 +2,7 @@
 import { useEventListener, useInfiniteScroll, useKeyPress } from "ahooks";
 import { ArticleListReturn, getArticleList } from "../../actions";
 import { useEffect, useRef, useState } from "react";
-import styles from "./articleList.module.css";
+import styles from "./index.module.css";
 import {
   useRouter,
   useSearchParams,
