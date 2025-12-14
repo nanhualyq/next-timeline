@@ -181,6 +181,7 @@ export default function ArticleList(props: Props) {
               >
                 {channel?.title}
               </Link>
+              {article.author && <span>by {article.author}</span>}
             </div>
           </li>
         );

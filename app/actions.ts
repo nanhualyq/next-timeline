@@ -9,11 +9,19 @@ import { and, desc, eq, getTableColumns, SQLWrapper } from "drizzle-orm";
 import { omit } from "lodash-es";
 import z from "zod";
 
-export async function postFeed(o: inputChannel) {
+export async function channelCrawler(o: inputChannel) {
   const crawler = crawlerFactor(o);
   await crawler.download();
   await crawler.saveChannel();
   await crawler.saveArticles();
+  return {
+    success: true,
+    id: crawler.channel.id,
+  };
+}
+
+export async function deleteChannel(id: number) {
+  await db.delete(channelTable).where(eq(channelTable.id, id));
   return {
     success: true,
   };
@@ -84,4 +92,13 @@ export async function patchArticle({ id, ...rest }: Partial<ArticleSelect>) {
     throw Error("id not found");
   }
   await db.update(articleTable).set(rest).where(eq(articleTable.id, id));
+}
+
+export async function deleteArticlesByChannel(channel_id: number) {
+  const res = await db
+    .delete(articleTable)
+    .where(eq(articleTable.channel_id, channel_id));
+  return {
+    success: !!res.lastInsertRowid,
+  };
 }

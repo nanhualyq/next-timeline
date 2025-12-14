@@ -1,4 +1,6 @@
+import { deleteChannel } from "@/app/actions";
 import { db } from "@/src/db";
+import { insertArticles } from "@/src/db/article";
 import { channelTable } from "@/src/db/schema";
 import { execSync } from "child_process";
 import {
@@ -18,38 +20,43 @@ afterAll(async () => {
   execSync("rm test.db");
 });
 beforeEach(async () => {
-  await db.delete(channelTable);
+  await db.insert(channelTable).values(makeChannel());
 });
 afterEach(async () => {
   await db.delete(channelTable);
 });
 
+function makeChannel(): typeof channelTable.$inferInsert {
+  return {
+    title: "titile",
+    link: "link",
+    type: "rss",
+  };
+}
+
 describe("channel table", () => {
-  it("select", async () => {
-    const res = await db.select().from(channelTable);
-    expect(res).toHaveLength(0);
-  });
-  it("create one", async () => {
-    const channel = await db.insert(channelTable).values({
-      title: "test",
-      link: "test",
-      description: "test",
-    });
-    expect(channel.lastInsertRowid).toBeTruthy();
-    const res = await db.select().from(channelTable);
-    expect(res).toHaveLength(1);
-  });
   it("link unique", async () => {
-    const channel = await db.insert(channelTable).values({
-      title: "test",
-      link: "test",
-    });
-    expect(channel.lastInsertRowid).toBeTruthy();
     await expect(
-      db.insert(channelTable).values({
-        title: "test2",
-        link: "test",
-      })
+      db.insert(channelTable).values(makeChannel())
     ).rejects.toThrow();
+  });
+  it("delete one with no articles", async () => {
+    await deleteChannel(1);
+    await expect(db.select().from(channelTable)).resolves.toHaveLength(0);
+  });
+  it("delete one with some articles", async () => {
+    await insertArticles([
+      {
+        link: "",
+        title: "",
+        channel_id: 1,
+      },
+    ]);
+    try {
+      await deleteChannel(1);
+    } catch (error) {
+      console.log(error);
+    }
+    await expect(db.select().from(channelTable)).resolves.toHaveLength(0);
   });
 });

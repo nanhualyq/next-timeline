@@ -25,7 +25,11 @@ export default function Article({ params, height, inModal }: Props) {
   return (
     <article className={styles.root} style={{ height }}>
       <div className={styles.scroll}>
-        <h1>{article.title}</h1>
+        <h1>
+          <a href={article.link} target="_blank">
+            {article.title}
+          </a>
+        </h1>
         <div
           className={styles.content}
           dangerouslySetInnerHTML={{ __html: article.content + "" }}
@@ -36,6 +40,7 @@ export default function Article({ params, height, inModal }: Props) {
         <StarToggle article={article} inModal={inModal} />
         <Pubtime time={article.pub_time || ""} />
         <Link href={`/?channel=${channel?.id}`}>{channel?.title}</Link>
+        <span>by {article.author}</span>
       </div>
     </article>
   );

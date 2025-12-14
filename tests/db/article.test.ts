@@ -1,4 +1,4 @@
-import { getArticleList } from "@/app/actions";
+import { deleteArticlesByChannel, getArticleList } from "@/app/actions";
 import { db } from "@/src/db";
 import { insertArticles } from "@/src/db/article";
 import { articleTable, channelTable } from "@/src/db/schema";
@@ -99,6 +99,19 @@ describe("article table", () => {
         ])
       ).resolves.not.toThrow();
       expect(await db.select().from(articleTable)).toHaveLength(1);
+    });
+  });
+
+  describe("deleteArticlesByChannel", () => {
+    it("works", async () => {
+      await insertArticles([
+        { channel_id: 1, title: "test", link: "test" },
+        { channel_id: 1, title: "test2", link: "test2" },
+      ]);
+      await deleteArticlesByChannel(2);
+      expect(await db.select().from(articleTable)).toHaveLength(2);
+      await deleteArticlesByChannel(1);
+      expect(await db.select().from(articleTable)).toHaveLength(0);
     });
   });
 });

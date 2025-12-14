@@ -13,7 +13,9 @@ export const channelTable = sqliteTable("channel", {
 export const articleTable = sqliteTable("article", {
   id: int().primaryKey(),
   channel_id: int()
-    .references(() => channelTable.id)
+    .references(() => channelTable.id, {
+      onDelete: "cascade",
+    })
     .notNull(),
   title: text().notNull(),
   link: text().notNull().unique(),

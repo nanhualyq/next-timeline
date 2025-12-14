@@ -1,14 +1,20 @@
 "use client";
-import { postFeed } from "@/app/actions";
+import { channelCrawler } from "@/app/actions";
 import { useRequest } from "ahooks";
 import { Button, Form, Input, message, Modal } from "antd";
+import { useRouter } from "next/navigation";
 
 export default function AddForm() {
+  const router = useRouter();
   const [messageApi, contextHolder] = message.useMessage();
-  const { loading, run } = useRequest(postFeed, {
+  const { loading, run } = useRequest(channelCrawler, {
     manual: true,
-    onSuccess() {
+    onSuccess(data) {
       messageApi.open({ type: "success", content: "success" });
+      if (data.id) {
+        router.push(`/?channel=${data.id}`);
+        location.reload();
+      }
     },
     onError(error) {
       const modal = Modal.error({
