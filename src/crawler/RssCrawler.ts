@@ -8,6 +8,12 @@ import { JSDOM } from "jsdom";
 import { db } from "../db";
 import { insertArticles } from "../db/article";
 
+function parseHtml(html: string) {
+  const dom = new JSDOM();
+  const parser = new dom.window.DOMParser();
+  return parser.parseFromString(html, "text/html");
+}
+
 export default class RssCrawler extends CrawlerBase {
   xmlObject: unknown;
 
@@ -41,16 +47,16 @@ export default class RssCrawler extends CrawlerBase {
   }
 
   async parseFavicon() {
-    const urls = [this.channel.link, this.parseArticleLink(this.items[0])];
+    const link = new URL(this.channel.link).origin
+    const urls = [link, this.parseArticleLink(this.items[0])];
     for (const url of urls) {
       if (!url) {
         continue;
       }
       const html = await fetch(url).then((r) => r.text());
-      const dom = new JSDOM();
-      const parser = new dom.window.DOMParser();
-      const doc = parser.parseFromString(html, "text/html");
-      const icon = doc.querySelector(`link[rel="icon"]`)?.getAttribute("href");
+      const icon = parseHtml(html)
+        .querySelector(`link[rel="icon"]`)
+        ?.getAttribute("href");
       if (icon) {
         return icon;
       }
@@ -116,10 +122,7 @@ export default class RssCrawler extends CrawlerBase {
   }
 
   private parseArticleCover(html: string): string | undefined {
-    const dom = new JSDOM();
-    const parser = new dom.window.DOMParser();
-    const doc = parser.parseFromString(html, "text/html");
-    return doc.querySelector("img")?.src;
+    return parseHtml(html).querySelector("img")?.src;
   }
 
   async saveChannel() {

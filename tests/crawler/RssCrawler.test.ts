@@ -13,7 +13,7 @@ describe("RssCrawler", () => {
 
   beforeEach(() => {
     // 在每個測試案例之前，重新初始化 RssCrawler 實例
-    rssCrawler = new RssCrawler({ link: "fakeLink", type: "" });
+    rssCrawler = new RssCrawler({ link: "http://a.com", type: "" });
     // 將全局的 fetch 替換為我們的 mockFetch
     global.fetch = mockFetch;
   });
@@ -83,7 +83,7 @@ describe("RssCrawler", () => {
       expect(channelInfo).toEqual({
         type: "rss",
         title: "My RSS Feed Title",
-        link: "fakeLink",
+        link: "http://a.com",
         description: "A description of my RSS feed",
         icon: "",
       });
@@ -107,7 +107,7 @@ describe("RssCrawler", () => {
       expect(channelInfo).toEqual({
         type: "rss",
         title: "My RSS Feed Title Direct",
-        link: "fakeLink",
+        link: "http://a.com",
         description: "A direct description of my RSS feed",
         icon: "",
       });
@@ -129,7 +129,7 @@ describe("RssCrawler", () => {
       expect(channelInfo).toEqual({
         type: "rss", // 注意：目前 parseChannel 硬編碼為 "rss" 類型
         title: "My Atom Feed Title",
-        link: "fakeLink", // 預期連結為物件
+        link: "http://a.com",
         description: "A subtitle for my Atom feed",
         icon: "",
       });
@@ -157,7 +157,7 @@ describe("RssCrawler", () => {
       expect(channelInfo).toEqual({
         type: "rss",
         title: "My Atom Feed Title",
-        link: "fakeLink", // 預期連結為物件
+        link: "http://a.com",
         description: "A subtitle for my Atom feed",
         icon: "",
       });
@@ -180,7 +180,7 @@ describe("RssCrawler", () => {
       expect(channelInfo).toEqual({
         type: "rss",
         title: "Atom Title",
-        link: "fakeLink",
+        link: "http://a.com",
         description: "Explicit description",
         icon: "",
       });
@@ -203,7 +203,7 @@ describe("RssCrawler", () => {
       expect(channelInfo).toEqual({
         type: "rss",
         title: "Feed without description",
-        link: "fakeLink",
+        link: "http://a.com",
         description: undefined, // 如果找不到，getXmlValue 會返回 undefined
         icon: "",
       });
@@ -418,17 +418,20 @@ describe("RssCrawler", () => {
       expect(factory.channel).toBe(p);
     });
     it("save to db when it is empty channel", async () => {
-      const factory = crawlerFactor({ type: "rss", link: "" });
+      const factory = crawlerFactor({ type: "rss", link: "http://a.com" });
       expect(factory.channel.id).toBe(undefined);
       const mockChannel = {
         title: "test",
-        link: "www",
+        link: "http://a.com",
       };
       factory.parseChannel = vi.fn().mockReturnValueOnce(mockChannel);
       const spy = vi.spyOn(db, "insert").mockReturnValueOnce({
         // @ts-expect-error just for test
         values: async () => ({ lastInsertRowid: 1 }),
       });
+      vi.spyOn(factory, "parseFavicon").mockReturnValueOnce(
+        Promise.resolve("")
+      );
       await factory.saveChannel();
       expect(factory.channel).toEqual({
         id: 1,
