@@ -1,6 +1,7 @@
 "use client";
 import { channelTable } from "@/src/db/schema";
 import {
+  BorderOutlined,
   DeleteOutlined,
   EditOutlined,
   EllipsisOutlined,
@@ -18,6 +19,7 @@ import {
   deleteChannel,
 } from "@/app/actions";
 import useMessage from "antd/es/message/useMessage";
+import ChannelTitle from "./ChannelTitle";
 
 interface Props {
   channel: typeof channelTable.$inferSelect;
@@ -107,7 +109,7 @@ export default function ChannelItem({ channel }: Props) {
 
   const onMenuClick: MenuProps["onClick"] = ({ key }) => {
     if (key === "Edit") {
-      router.push(`/channel/edit/${channel.id}`);
+      router.push(`/channel/${channel.id}/edit`);
     } else if (["Delete", "Empty"].includes(key)) {
       handleDelete(key);
     } else if (key === "Refresh") {
@@ -121,9 +123,7 @@ export default function ChannelItem({ channel }: Props) {
       className={`${styles.root} ${isFiltering ? styles.active : ""}`}
     >
       {contextHolder}
-      <Link href={`/?channel=${channel.id}`} style={{ flex: 1 }}>
-        {channel.title}
-      </Link>
+      <ChannelTitle channel={channel} style={{ flex: 1 }} />
       <Dropdown
         menu={{ items: menuItems, onClick: onMenuClick }}
         trigger={["click"]}

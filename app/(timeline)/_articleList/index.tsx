@@ -14,6 +14,7 @@ import Link from "next/link";
 import { produce } from "immer";
 import { invoke } from "lodash-es";
 import { Divider, Result } from "antd";
+import ChannelTitle from "../_components/ChannelTitle";
 
 interface Props {
   initData: ArticleListReturn;
@@ -175,12 +176,10 @@ export default function ArticleList(props: Props) {
                 <StarToggle article={article} />
               </span>
               <Pubtime time={article.pub_time} />
-              <Link
-                href={`/?channel=${channel?.id}`}
+              <ChannelTitle
+                channel={channel!}
                 onClick={(e) => e.stopPropagation()}
-              >
-                {channel?.title}
-              </Link>
+              />
               {article.author && <span>by {article.author}</span>}
             </div>
           </li>

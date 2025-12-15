@@ -3,6 +3,10 @@
 }
 .c_ul {
   list-style: none;
-  margin-left: 0;
+  margin: 0;
   padding-left: 12px;
+}
+.category {
+  line-height: 1.6rem;
+  cursor: pointer;
 }

@@ -3,8 +3,8 @@ import { use } from "react";
 import styles from "./page.module.css";
 import StarToggle from "./StarToggle";
 import Pubtime from "./Pubtime";
-import Link from "next/link";
 import { Divider } from "antd";
+import ChannelTitle from "../../_components/ChannelTitle";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -39,7 +39,7 @@ export default function Article({ params, height, inModal }: Props) {
       <div className={styles.footer}>
         <StarToggle article={article} inModal={inModal} />
         <Pubtime time={article.pub_time || ""} />
-        <Link href={`/?channel=${channel?.id}`}>{channel?.title}</Link>
+        <ChannelTitle channel={channel!} />
         <span>by {article.author}</span>
       </div>
     </article>
