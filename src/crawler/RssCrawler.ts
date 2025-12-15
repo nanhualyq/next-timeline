@@ -40,18 +40,45 @@ export default class RssCrawler extends CrawlerBase {
     });
   }
 
-  parseArticles() {
+  async parseFavicon() {
+    const urls = [this.channel.link, this.parseArticleLink(this.items[0])];
+    for (const url of urls) {
+      if (!url) {
+        continue;
+      }
+      const html = await fetch(url).then((r) => r.text());
+      const dom = new JSDOM();
+      const parser = new dom.window.DOMParser();
+      const doc = parser.parseFromString(html, "text/html");
+      const icon = doc.querySelector(`link[rel="icon"]`)?.getAttribute("href");
+      if (icon) {
+        return icon;
+      }
+    }
+    return "";
+  }
+
+  get items() {
     const items = get(this.xmlObject, "rss.channel.item");
     const entries = get(this.xmlObject, "feed.entry");
+    return items || entries || [];
+  }
+
+  private parseArticleLink(item: unknown) {
+    const G = this.getXmlValue;
+    return G(item, "link.@_href") || G(item, "link") || G(item, "guid");
+  }
+
+  parseArticles() {
     const articles = [];
     const articleSchema = createInsertSchema(articleTable);
     const G = this.getXmlValue;
-    for (const item of items || entries || []) {
+    for (const item of this.items) {
       const content = this.parseArticleContent(item);
       const article = articleSchema.parse({
         channel_id: this.channel.id || 0,
         title: G(item, "title"),
-        link: G(item, "link.@_href") || G(item, "link") || G(item, "guid"),
+        link: this.parseArticleLink(item),
         summary: G(item, "summary") || G(item, "description"),
         content: content,
         pub_time: this.parseArticlePubtime(item),
@@ -100,6 +127,7 @@ export default class RssCrawler extends CrawlerBase {
       return;
     }
     const channel = this.parseChannel();
+    channel.icon = await this.parseFavicon();
     const res = await db.insert(channelTable).values(channel);
     this.channel = {
       id: Number(res.lastInsertRowid),

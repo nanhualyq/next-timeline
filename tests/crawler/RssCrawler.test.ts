@@ -453,4 +453,25 @@ describe("RssCrawler", () => {
       spy.mockRestore();
     });
   });
+
+  describe("parseFavicon", () => {
+    it("works", async () => {
+      const url = "https://cdn.oaistatic.com/assets/favicon-eex17e9e.ico";
+      const html = `<head><link rel="icon" href="${url}" sizes="32x32"/></head>`;
+      mockFetch.mockResolvedValueOnce({
+        text: () => Promise.resolve(html),
+      });
+      const icon = await rssCrawler.parseFavicon();
+      expect(icon).toBe(url);
+    });
+    it("gets empty", async () => {
+      const url = "https://cdn.oaistatic.com/assets/favicon-eex17e9e.ico";
+      const html = `<head><error-link rel="icon" href="${url}" sizes="32x32"/></head>`;
+      mockFetch.mockResolvedValueOnce({
+        text: () => Promise.resolve(html),
+      });
+      const icon = await rssCrawler.parseFavicon();
+      expect(icon).toBe("");
+    });
+  });
 });
