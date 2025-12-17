@@ -1,6 +1,6 @@
 "use client";
 import { useEventListener, useInfiniteScroll, useKeyPress } from "ahooks";
-import { ArticleListReturn, getArticleList } from "../../actions";
+import { ArticleListReturn, getArticleList, readArticles } from "../../actions";
 import { useEffect, useRef, useState } from "react";
 import styles from "./index.module.css";
 import {
@@ -14,6 +14,7 @@ import { produce } from "immer";
 import { invoke } from "lodash-es";
 import { Divider, Result } from "antd";
 import ChannelTitle from "../_components/ChannelTitle";
+import { EyeOutlined } from "@ant-design/icons";
 
 interface Props {
   initData: ArticleListReturn;
@@ -126,16 +127,37 @@ export default function ArticleList(props: Props) {
       ) as HTMLSpanElement;
       starEl?.click();
     },
+    m: () => readAbove(active),
   };
 
   useKeyPress(
-    ["j", "k", "uparrow", "downarrow", "enter", "home", "end", "f"],
+    ["j", "k", "uparrow", "downarrow", "enter", "home", "end", "f", "m"],
     (e, key) => invoke(keyCallbackMap, key)
   );
 
   useEffect(() => {
-    ulRef?.current?.querySelector(`.${styles["li_active"]}`)?.scrollIntoView();
+    ulRef?.current?.querySelector(`.${styles["li_active"]}`)?.scrollIntoView({
+      block: "center",
+    });
   }, [active]);
+
+  function readAbove(index: number) {
+    const ids: number[] = [];
+    mutate(
+      produce(data, (draft) => {
+        if (!draft) {
+          return;
+        }
+        for (let i = index; i >= 0; i--) {
+          if (!draft.list[i].article.read) {
+            ids.push(draft.list[i].article.id);
+            draft.list[i].article.read = true;
+          }
+        }
+      })
+    );
+    readArticles(ids);
+  }
 
   if (!loading && (!data || !data.list.length)) {
     return <Result status="info" title="No More Articles!" />;
@@ -181,6 +203,14 @@ export default function ArticleList(props: Props) {
                 onClick={(e) => e.stopPropagation()}
               />
               {article.author && <span>by {article.author}</span>}
+              <a
+                onClick={(e) => {
+                  e.stopPropagation();
+                  readAbove(index);
+                }}
+              >
+                <EyeOutlined /> Read above
+              </a>
             </div>
           </li>
         );

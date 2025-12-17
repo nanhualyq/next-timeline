@@ -5,7 +5,14 @@ import { crawlerFactor } from "@/src/crawler/factor";
 import { db } from "@/src/db";
 import { ArticleSelect } from "@/src/db/article";
 import { articleTable, channelTable } from "@/src/db/schema";
-import { and, desc, eq, getTableColumns, SQLWrapper } from "drizzle-orm";
+import {
+  and,
+  desc,
+  eq,
+  getTableColumns,
+  inArray,
+  SQLWrapper,
+} from "drizzle-orm";
 import { omit } from "lodash-es";
 import z from "zod";
 
@@ -100,5 +107,15 @@ export async function deleteArticlesByChannel(channel_id: number) {
     .where(eq(articleTable.channel_id, channel_id));
   return {
     success: !!res.lastInsertRowid,
+  };
+}
+
+export async function readArticles(ids: number[]) {
+  await db
+    .update(articleTable)
+    .set({ read: true })
+    .where(inArray(articleTable.id, ids));
+  return {
+    success: true,
   };
 }
