@@ -10,7 +10,6 @@ import {
 } from "next/navigation";
 import StarToggle, { STAR_EVENT_NAME } from "../article/[id]/StarToggle";
 import Pubtime from "../article/[id]/Pubtime";
-import Link from "next/link";
 import { produce } from "immer";
 import { invoke } from "lodash-es";
 import { Divider, Result } from "antd";
@@ -26,6 +25,7 @@ export default function ArticleList(props: Props) {
   const router = useRouter();
   const ulRef = useRef<HTMLUListElement>(null);
   const params = useSearchParams();
+
   const { data, loadingMore, mutate, loading } =
     useInfiniteScroll<ArticleListReturn>(
       async (d) => {
@@ -35,7 +35,7 @@ export default function ArticleList(props: Props) {
         return getArticleList({
           limit,
           offset: d.list.length,
-          ...params,
+          ...Object.fromEntries(params),
         });
       },
       {
