@@ -1,5 +1,7 @@
 .root {
   padding: 0 8px;
+  flex: 1;
+  overflow: auto;
 }
 .c_ul {
   list-style: none;

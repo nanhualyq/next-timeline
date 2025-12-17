@@ -84,7 +84,7 @@ export default class RssCrawler extends CrawlerBase {
     if (res && !Array.isArray(res)) {
       return [res];
     }
-    return res || [];
+    return (res || []).slice(0, 20);
   }
 
   parseArticleLink(item: unknown): string | undefined {

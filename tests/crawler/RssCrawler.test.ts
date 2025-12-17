@@ -578,32 +578,32 @@ describe("RssCrawler", () => {
     });
   });
 
-  const xml = `<feed>
-         <entry>
-          <id>yt:video:SpRPuS5MEwI</id>
-          <yt:videoId>SpRPuS5MEwI</yt:videoId>
-          <yt:channelId>UCeUJO1H3TEXu2syfAAPjYKQ</yt:channelId>
-          <title>Vision Pro很酷，但根本不需要买新款！</title>
-          <link rel="alternate" href="https://www.youtube.com/watch?v=SpRPuS5MEwI"/>
-          <author>
-          <name>极客湾Geekerwan</name>
-          <uri>https://www.youtube.com/channel/UCeUJO1H3TEXu2syfAAPjYKQ</uri>
-          </author>
-          <published>2025-11-01T17:19:20+00:00</published>
-          <updated>2025-11-02T10:42:52+00:00</updated>
-          <media:group>
-            <media:title>Vision Pro很酷，但根本不需要买新款！</media:title>
-            <media:content url="https://www.youtube.com/v/SpRPuS5MEwI?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
-            <media:thumbnail url="https://i4.ytimg.com/vi/SpRPuS5MEwI/hqdefault.jpg" width="480" height="360"/>
-            <media:description>刚拿到M5 Vision Pro的时候，我觉得他的提升好大！哪哪儿都更流畅更好用了。结果我又拿出已经吃灰的老Vision Pro才发现，原来都是新系统的功劳……这个M5的换代升级，只能说，如升。那么2025年，Vision Pro到底能做些什么呢？</media:description>
-            <media:community>
-              <media:starRating count="1913" average="5.00" min="1" max="5"/>
-              <media:statistics views="92675"/>
-            </media:community>
-          </media:group>
-        </entry>
-      </feed>`;
   describe("youtube", () => {
+    const xml = `<feed>
+           <entry>
+            <id>yt:video:SpRPuS5MEwI</id>
+            <yt:videoId>SpRPuS5MEwI</yt:videoId>
+            <yt:channelId>UCeUJO1H3TEXu2syfAAPjYKQ</yt:channelId>
+            <title>Vision Pro很酷，但根本不需要买新款！</title>
+            <link rel="alternate" href="https://www.youtube.com/watch?v=SpRPuS5MEwI"/>
+            <author>
+            <name>极客湾Geekerwan</name>
+            <uri>https://www.youtube.com/channel/UCeUJO1H3TEXu2syfAAPjYKQ</uri>
+            </author>
+            <published>2025-11-01T17:19:20+00:00</published>
+            <updated>2025-11-02T10:42:52+00:00</updated>
+            <media:group>
+              <media:title>Vision Pro很酷，但根本不需要买新款！</media:title>
+              <media:content url="https://www.youtube.com/v/SpRPuS5MEwI?version=3" type="application/x-shockwave-flash" width="640" height="390"/>
+              <media:thumbnail url="https://i4.ytimg.com/vi/SpRPuS5MEwI/hqdefault.jpg" width="480" height="360"/>
+              <media:description>刚拿到M5 Vision Pro的时候，我觉得他的提升好大！哪哪儿都更流畅更好用了。结果我又拿出已经吃灰的老Vision Pro才发现，原来都是新系统的功劳……这个M5的换代升级，只能说，如升。那么2025年，Vision Pro到底能做些什么呢？</media:description>
+              <media:community>
+                <media:starRating count="1913" average="5.00" min="1" max="5"/>
+                <media:statistics views="92675"/>
+              </media:community>
+            </media:group>
+          </entry>
+        </feed>`;
     it("get cover", () => {
       rssCrawler.parseXml(xml);
       const cover = rssCrawler.parseArticleCover(rssCrawler.items[0], "");
