@@ -40,7 +40,7 @@ export default function Article({ params, height, inModal }: Props) {
         <StarToggle article={article} inModal={inModal} />
         <Pubtime time={article.pub_time || ""} />
         <ChannelTitle channel={channel!} />
-        <span>by {article.author}</span>
+        {article.author && <span>by {article.author}</span>}
       </div>
     </article>
   );

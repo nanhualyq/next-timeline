@@ -17,7 +17,7 @@ export default function ChannelTitle({ channel, style, onClick }: Props) {
       onClick={onClick}
     >
       {channel.icon ? (
-        <img alt={channel.title} src={channel.icon} width={16} height={16} />
+        <img src={channel.icon} width={16} height={16} />
       ) : (
         <BorderOutlined />
       )}
