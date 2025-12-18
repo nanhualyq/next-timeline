@@ -120,6 +120,12 @@ export async function readArticles(ids: number[]) {
     success: true,
   };
 }
+export async function readAllArticles() {
+  await db.update(articleTable).set({ read: true });
+  return {
+    success: true,
+  };
+}
 
 export async function countUnread() {
   const res = await db

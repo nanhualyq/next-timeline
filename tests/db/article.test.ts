@@ -3,6 +3,7 @@ import {
   countUnread,
   deleteArticlesByChannel,
   getArticleList,
+  readAllArticles,
   readArticles,
 } from "@/app/actions";
 import { db } from "@/src/db";
@@ -136,6 +137,32 @@ describe("article table", () => {
         },
       ]);
       await readArticles([1, 2]);
+      expect(await db.select().from(articleTable)).toMatchObject([
+        {
+          read: true,
+        },
+        {
+          read: true,
+        },
+      ]);
+    });
+  });
+
+  describe("readAllArticles", () => {
+    it("works", async () => {
+      await insertArticles([
+        { channel_id: 1, title: "test", link: "test" },
+        { channel_id: 1, title: "test2", link: "test2" },
+      ]);
+      expect(await db.select().from(articleTable)).toMatchObject([
+        {
+          read: false,
+        },
+        {
+          read: false,
+        },
+      ]);
+      await readAllArticles();
       expect(await db.select().from(articleTable)).toMatchObject([
         {
           read: true,

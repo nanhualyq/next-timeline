@@ -1,5 +1,6 @@
 "use client";
-import { Radio, RadioChangeEvent } from "antd";
+import { readAllArticles } from "@/app/actions";
+import { Button, Radio, RadioChangeEvent, Space } from "antd";
 import { useRouter, useSearchParams } from "next/navigation";
 
 export default function FilterBar() {
@@ -12,26 +13,35 @@ export default function FilterBar() {
     router.push(`?${nsp}`);
   }
 
+  async function handleReadAll() {
+    await readAllArticles();
+    location.href = "/";
+    // location.reload();
+  }
+
   return (
     <div style={{ padding: "8px" }}>
-      <Radio.Group
-        value={sp.get("read") || ""}
-        onChange={onChange}
-        options={[
-          {
-            label: "New",
-            value: "",
-          },
-          {
-            label: "Old",
-            value: "old",
-          },
-          {
-            label: "All",
-            value: "all",
-          },
-        ]}
-      />
+      <Space>
+        <Radio.Group
+          value={sp.get("read") || ""}
+          onChange={onChange}
+          options={[
+            {
+              label: "New",
+              value: "",
+            },
+            {
+              label: "Old",
+              value: "old",
+            },
+            {
+              label: "All",
+              value: "all",
+            },
+          ]}
+        />
+        <Button onClick={handleReadAll}>Read All</Button>
+      </Space>
     </div>
   );
 }
