@@ -5,6 +5,12 @@
 }
 .root li {
   padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.title {
+  flex: 1;
 }
 .root a {
   color: #333;

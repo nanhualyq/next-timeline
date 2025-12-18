@@ -11,9 +11,10 @@ import {
   eq,
   getTableColumns,
   inArray,
+  sql,
   SQLWrapper,
 } from "drizzle-orm";
-import { omit } from "lodash-es";
+import { groupBy, omit } from "lodash-es";
 import z from "zod";
 
 export async function channelCrawler(o: inputChannel) {
@@ -118,4 +119,29 @@ export async function readArticles(ids: number[]) {
   return {
     success: true,
   };
+}
+
+export async function countUnread() {
+  const res = await db
+    .select({
+      channel: articleTable.channel_id,
+      count: sql<number>`cast(count(${articleTable.id}) as int)`,
+    })
+    .from(articleTable)
+    .where(eq(articleTable.read, false))
+    .groupBy(articleTable.channel_id);
+  return res.reduce((acc, cur) => {
+    acc[cur.channel] = cur.count;
+    return acc;
+  }, {} as Record<number, number>);
+}
+
+export async function countStar() {
+  const res = await db
+    .select({
+      count: sql<number>`cast(count(${articleTable.id}) as int)`,
+    })
+    .from(articleTable)
+    .where(eq(articleTable.star, true));
+  return res[0];
 }

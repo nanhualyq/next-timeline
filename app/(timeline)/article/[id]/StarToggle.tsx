@@ -4,6 +4,7 @@ import { LoadingOutlined, StarFilled, StarOutlined } from "@ant-design/icons";
 import { useBoolean, useRequest } from "ahooks";
 import { Modal } from "antd";
 import { useEffect } from "react";
+import { useCountStore } from "../../_components/CountStore";
 
 interface Props {
   article: {
@@ -18,13 +19,18 @@ export const STAR_EVENT_NAME = "article-toggle-star-in-modal";
 export default function StarToggle({ article, inModal }: Props) {
   const { id, star } = article;
   const [isStar, { toggle, set }] = useBoolean();
+  const { plusStar } = useCountStore();
+
   useEffect(() => {
     set(!!star);
   }, [star]);
+
   const { loading, run } = useRequest(patchArticle, {
     manual: true,
     onSuccess: () => {
       toggle();
+      plusStar(isStar ? -1 : 1);
+
       if (inModal) {
         window.dispatchEvent(
           new CustomEvent(STAR_EVENT_NAME, {

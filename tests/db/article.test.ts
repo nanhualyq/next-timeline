@@ -1,4 +1,6 @@
 import {
+  countStar,
+  countUnread,
   deleteArticlesByChannel,
   getArticleList,
   readArticles,
@@ -142,6 +144,39 @@ describe("article table", () => {
           read: true,
         },
       ]);
+    });
+  });
+
+  describe("countUnread", () => {
+    it("works", async () => {
+      await insertArticles([
+        { channel_id: 1, title: "test", link: "test" },
+        { channel_id: 2, title: "test2", link: "test2" },
+      ]);
+      const res = await countUnread();
+      expect(res).toMatchObject({
+        1: 1,
+        2: 1,
+      });
+    });
+  });
+
+  describe("countStar", () => {
+    it("works empty", async () => {
+      await insertArticles([
+        { channel_id: 1, title: "test", link: "test" },
+        { channel_id: 2, title: "test2", link: "test2" },
+      ]);
+      const res = await countStar();
+      expect(res).toMatchObject({ count: 0 });
+    });
+    it("works has stars", async () => {
+      await insertArticles([
+        { channel_id: 1, title: "test", link: "test", star: true },
+        { channel_id: 2, title: "test2", link: "test2", star: true },
+      ]);
+      const res = await countStar();
+      expect(res).toMatchObject({ count: 2 });
     });
   });
 });

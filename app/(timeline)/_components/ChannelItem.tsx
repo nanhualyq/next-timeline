@@ -1,7 +1,6 @@
 "use client";
 import { channelTable } from "@/src/db/schema";
 import {
-  BorderOutlined,
   DeleteOutlined,
   EditOutlined,
   EllipsisOutlined,
@@ -9,7 +8,6 @@ import {
   SyncOutlined,
 } from "@ant-design/icons";
 import { Dropdown, MenuProps, Modal } from "antd";
-import Link from "next/link";
 import styles from "./ChannelItem.module.css";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
@@ -20,6 +18,7 @@ import {
 } from "@/app/actions";
 import useMessage from "antd/es/message/useMessage";
 import ChannelTitle from "./ChannelTitle";
+import CountShow from "./CountShow";
 
 interface Props {
   channel: typeof channelTable.$inferSelect;
@@ -124,6 +123,7 @@ export default function ChannelItem({ channel }: Props) {
     >
       {contextHolder}
       <ChannelTitle channel={channel} style={{ flex: 1 }} />
+      <CountShow channel={channel.id} />
       <Dropdown
         menu={{ items: menuItems, onClick: onMenuClick }}
         trigger={["click"]}

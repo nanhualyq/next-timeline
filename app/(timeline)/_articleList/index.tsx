@@ -15,6 +15,7 @@ import { invoke } from "lodash-es";
 import { Divider, Result } from "antd";
 import ChannelTitle from "../_components/ChannelTitle";
 import { EyeOutlined } from "@ant-design/icons";
+import { useCountStore } from "../_components/CountStore";
 
 interface Props {
   initData: ArticleListReturn;
@@ -26,6 +27,7 @@ export default function ArticleList(props: Props) {
   const router = useRouter();
   const ulRef = useRef<HTMLUListElement>(null);
   const params = useSearchParams();
+  const { plusUnread } = useCountStore();
 
   const { data, loadingMore, mutate, loading } =
     useInfiniteScroll<ArticleListReturn>(
@@ -58,6 +60,7 @@ export default function ArticleList(props: Props) {
     } else {
       router.push(target);
     }
+    plusUnread(data.list[index].article.channel_id, -1);
     mutate(
       produce(data, (draft) => {
         draft.list[index].article.read = true;
@@ -152,6 +155,7 @@ export default function ArticleList(props: Props) {
           if (!draft.list[i].article.read) {
             ids.push(draft.list[i].article.id);
             draft.list[i].article.read = true;
+            plusUnread(draft.list[i].article.channel_id, -1);
           }
         }
       })
