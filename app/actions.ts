@@ -14,10 +14,11 @@ import {
   sql,
   SQLWrapper,
 } from "drizzle-orm";
-import { groupBy, omit } from "lodash-es";
+import { omit } from "lodash-es";
 import z from "zod";
 
 export async function channelCrawler(o: inputChannel) {
+  console.log("channelCrawler start:", o.link);
   const crawler = crawlerFactor(o);
   await crawler.download();
   await crawler.saveChannel();
@@ -25,6 +26,16 @@ export async function channelCrawler(o: inputChannel) {
   return {
     success: true,
     id: crawler.channel.id,
+  };
+}
+
+export async function channelsCrawler() {
+  const channels = await db.select().from(channelTable);
+  for (const channel of channels) {
+    await channelCrawler(channel);
+  }
+  return {
+    success: true,
   };
 }
 
