@@ -617,4 +617,31 @@ describe("RssCrawler", () => {
       );
     });
   });
+
+  describe("parseArticleContent", () => {
+    it("works for normal", () => {
+      const content = rssCrawler.parseArticleContent({
+        content: { "#text": `<h1>123</h1>` },
+      });
+      expect(content).toBe("<h1>123</h1>");
+    });
+    it("avoid xss code of script", () => {
+      const content = rssCrawler.parseArticleContent({
+        content: { "#text": `<script>alert(1)</script>` },
+      });
+      expect(content).toBe("");
+    });
+    it("avoid xss code of onerror", () => {
+      const content = rssCrawler.parseArticleContent({
+        content: { "#text": `<img src="x" onerror="alert(1)">` },
+      });
+      expect(content).toBe("");
+    });
+    it("avoid xss code of javascript:", () => {
+      const content = rssCrawler.parseArticleContent({
+        content: { "#text": `<a href="javascript:alert(1)">click</a>` },
+      });
+      expect(content).toBe(`<a>click</a>`);
+    });
+  });
 });

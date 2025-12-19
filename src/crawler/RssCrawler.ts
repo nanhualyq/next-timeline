@@ -8,6 +8,7 @@ import { JSDOM } from "jsdom";
 import { db } from "../db";
 import { insertArticles } from "../db/article";
 import { setGlobalDispatcher, Agent } from "undici";
+import sanitizeHtml from "sanitize-html";
 
 // Set the global connection timeout to 20 seconds
 setGlobalDispatcher(
@@ -135,13 +136,13 @@ export default class RssCrawler extends CrawlerBase {
     }
   }
   parseArticleContent(item: unknown) {
-    return (
+    const html =
       get(item, "content:encoded.#text") ||
       get(item, "content.#text") ||
       get(item, "description.#text") ||
       get(item, "media:group.media:description.#text") ||
-      ""
-    );
+      "";
+    return sanitizeHtml(html);
   }
   private parseArticlePubtime(item: unknown) {
     const time = get(item, "published.#text") || get(item, "pubDate.#text");
