@@ -1,0 +1,15 @@
+services:
+  next-time:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: "next-time"
+    ports:
+      - 8899:3000
+    environment:
+      - DB_FILE_NAME=file:prod.db
+    volumes:
+      - ./prod.db:/app/prod.db
+    # user:
+    #   - 1000:1000
+    restart: always

@@ -15,7 +15,7 @@ export default function useSwipe(options: Options) {
       startX = e.touches[0].clientX;
     },
     {
-      enable: responsive.xs || responsive.sm,
+      enable: responsive?.xs || responsive?.sm,
     }
   );
 
@@ -32,7 +32,7 @@ export default function useSwipe(options: Options) {
       }
     },
     {
-      enable: responsive.xs || responsive.sm,
+      enable: responsive?.xs || responsive?.sm,
     }
   );
 }

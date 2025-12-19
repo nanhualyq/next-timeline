@@ -1,6 +1,7 @@
 import ArticleList from "./_articleList";
 import { getArticleList } from "../actions";
 import FilterBar from "./_articleList/FilterBar";
+import { Suspense } from "react";
 
 interface Props {
   searchParams: Promise<Record<string, string>>;
@@ -15,9 +16,13 @@ export default async function Home({ searchParams }: Props) {
   });
   return (
     <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
-      <FilterBar />
+      <Suspense fallback="loading...">
+        <FilterBar />
+      </Suspense>
       <div style={{ flex: 1, overflow: "hidden" }}>
-        <ArticleList key={JSON.stringify(params)} initData={articles} />;
+        <Suspense fallback="loading...">
+          <ArticleList key={JSON.stringify(params)} initData={articles} />;
+        </Suspense>
       </div>
     </div>
   );
