@@ -4,9 +4,9 @@ import { ArticleListReturn, getArticleList, readArticles } from "../../actions";
 import { useEffect, useRef, useState } from "react";
 import styles from "./index.module.css";
 import {
+  usePathname,
   useRouter,
   useSearchParams,
-  useSelectedLayoutSegment,
 } from "next/navigation";
 import StarToggle, { STAR_EVENT_NAME } from "../article/[id]/StarToggle";
 import Pubtime from "../article/[id]/Pubtime";
@@ -48,7 +48,8 @@ export default function ArticleList(props: Props) {
       }
     );
 
-  const segment = useSelectedLayoutSegment("modal");
+  const pathname = usePathname();
+  const segment = pathname.startsWith("/article");
 
   function viewArticle(index: number) {
     if (!data || !data.list || !data.list[index]) {
