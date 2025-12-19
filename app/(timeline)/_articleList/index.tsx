@@ -16,6 +16,7 @@ import { Divider, Result } from "antd";
 import ChannelTitle from "../_components/ChannelTitle";
 import { EyeOutlined } from "@ant-design/icons";
 import { useCountStore } from "../_components/CountStore";
+import useSwipe from "./useSwipe";
 
 interface Props {
   initData: ArticleListReturn;
@@ -137,6 +138,11 @@ export default function ArticleList(props: Props) {
     ["j", "k", "uparrow", "downarrow", "enter", "home", "end", "f", "m"],
     (e, key) => invoke(keyCallbackMap, key)
   );
+
+  useSwipe({
+    onSwipeLeft: () => moveActive(-1),
+    onSwipeRight: () => moveActive(1),
+  });
 
   useEffect(() => {
     ulRef?.current?.querySelector(`.${styles["li_active"]}`)?.scrollIntoView({
