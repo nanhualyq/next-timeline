@@ -142,7 +142,16 @@ export default class RssCrawler extends CrawlerBase {
       get(item, "description.#text") ||
       get(item, "media:group.media:description.#text") ||
       "";
-    return sanitizeHtml(html);
+    return sanitizeHtml(html, {
+      allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
+      allowedAttributes: {
+        ...sanitizeHtml.defaults.allowedAttributes,
+        img: ["src", "alt", "title"],
+      },
+      allowedSchemesByTag: {
+        img: ["http", "https", "data"],
+      },
+    });
   }
   private parseArticlePubtime(item: unknown) {
     const time = get(item, "published.#text") || get(item, "pubDate.#text");

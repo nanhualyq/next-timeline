@@ -637,6 +637,12 @@ describe("RssCrawler", () => {
       });
       expect(content).toBe("");
     });
+    it("img should has src", () => {
+      const content = rssCrawler.parseArticleContent({
+        content: { "#text": `<img src="http://a.com/1.jpg" />` },
+      });
+      expect(content).toBe(`<img src="http://a.com/1.jpg" />`);
+    });
     it("avoid xss code of javascript:", () => {
       const content = rssCrawler.parseArticleContent({
         content: { "#text": `<a href="javascript:alert(1)">click</a>` },
