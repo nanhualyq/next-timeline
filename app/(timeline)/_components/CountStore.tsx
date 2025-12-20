@@ -1,6 +1,8 @@
 "use client";
 import { countStar, countUnread } from "@/app/actions";
 import { useInterval, useTitle } from "ahooks";
+import { get } from "lodash-es";
+import { useEffect } from "react";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 
@@ -48,11 +50,14 @@ export const useCountStore = create<State & Actions>()(
 export default function CountStore() {
   const { fetchUnread, fetchStar, unread } = useCountStore();
   const unreadCount = Object.values(unread).reduce((a, b) => a + b, 0);
-  useTitle(
-    unreadCount
-      ? `(${unreadCount}) ${document.title.replace(/^\(\d+\)\s?/, "")}`
-      : document.title
-  );
+  useEffect(() => {
+    if (unreadCount) {
+      document.title = `(${unreadCount}) ${document.title.replace(
+        /^\(\d+\)\s?/,
+        ""
+      )}`;
+    }
+  }, [unreadCount]);
   useInterval(
     () => {
       fetchUnread();
