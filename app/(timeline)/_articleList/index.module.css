@@ -14,14 +14,14 @@
   padding: 8px;
   background-color: #fff;
   display: grid;
-  grid-template-columns: 128px 1fr;
+  grid-template-columns: auto 1fr;
   grid-template-rows: repeat(3, auto);
   grid-template-areas:
     "cover title"
     "cover summary"
     "cover others";
   grid-column-gap: 8px;
-  grid-row-gap: 0px;
+  grid-row-gap: 12px;
 }
 @media screen and (max-width: 768px) {
   .li {
@@ -45,6 +45,7 @@
 
 .cover {
   grid-area: cover;
+  width: 128px;
 }
 .cover img {
   max-width: 100%;

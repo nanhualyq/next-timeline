@@ -59,12 +59,14 @@ export default function ArticleList(props: Props) {
     } else {
       router.push(target);
     }
-    plusUnread(data.list[index].article.channel_id, -1);
-    mutate(
-      produce(data, (draft) => {
-        draft.list[index].article.read = true;
-      })
-    );
+    if (!article.read) {
+      plusUnread(article.channel_id, -1);
+      mutate(
+        produce(data, (draft) => {
+          draft.list[index].article.read = true;
+        })
+      );
+    }
   }
 
   useEventListener(STAR_EVENT_NAME, handleStarToggle);
@@ -188,7 +190,7 @@ export default function ArticleList(props: Props) {
           >
             {article.cover && (
               <div className={styles.cover}>
-                <img src={article.cover} alt={article.title} />
+                <img src={article.cover} />
               </div>
             )}
             <div className={styles.title}>

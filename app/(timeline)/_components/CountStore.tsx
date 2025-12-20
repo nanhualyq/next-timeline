@@ -62,7 +62,6 @@ export default function CountStore() {
     () => {
       fetchUnread();
       fetchStar();
-      console.log("fetch count data");
     },
     1000 * 60 * 5,
     {
