@@ -1,9 +1,9 @@
 services:
-  next-time:
+  next-timeline:
     build:
       context: .
       dockerfile: Dockerfile
-    image: "next-time"
+    image: "next-timeline"
     ports:
       - 8899:3000
     environment:

@@ -6,7 +6,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # 添加 cron 任务
-RUN echo "0 * * * * curl -s http://next-time:3000/channel/refresh >> /var/log/cron.log 2>&1" > /etc/cron.d/my-cron
+RUN echo "0 * * * * curl -s http://next-timeline:3000/channel/refresh >> /var/log/cron.log 2>&1" > /etc/cron.d/my-cron
 
 # 设置权限
 RUN chmod 0644 /etc/cron.d/my-cron && \

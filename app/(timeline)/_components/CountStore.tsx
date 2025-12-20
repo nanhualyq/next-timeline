@@ -1,6 +1,6 @@
 "use client";
 import { countStar, countUnread } from "@/app/actions";
-import { useEffect } from "react";
+import { useInterval } from "ahooks";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 
@@ -47,10 +47,16 @@ export const useCountStore = create<State & Actions>()(
 
 export default function CountStore() {
   const { fetchUnread, fetchStar } = useCountStore();
-  useEffect(() => {
-    fetchUnread();
-    fetchStar();
-    console.log("fetch count data");
-  }, []);
+  useInterval(
+    () => {
+      fetchUnread();
+      fetchStar();
+      console.log("fetch count data");
+    },
+    1000 * 60 * 5,
+    {
+      immediate: true,
+    }
+  );
   return null;
 }

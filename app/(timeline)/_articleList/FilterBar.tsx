@@ -1,5 +1,5 @@
 "use client";
-import { channelsCrawler, readAllArticles } from "@/app/actions";
+import { readAllArticles } from "@/app/actions";
 import { Button, Select, Space } from "antd";
 import { useRouter, useSearchParams } from "next/navigation";
 import CountShow from "../_components/CountShow";
@@ -20,11 +20,6 @@ export default function FilterBar() {
     await readAllArticles();
     location.href = "/";
     // location.reload();
-  }
-
-  function handleRereshAll() {
-    channelsCrawler();
-    alert("Refresh started");
   }
 
   function handleFoldAsider() {
@@ -58,7 +53,6 @@ export default function FilterBar() {
         ]}
       />
       <Button onClick={handleReadAll}>Read All</Button>
-      <Button onClick={handleRereshAll}>Refresh All</Button>
     </Space>
   );
 }
