@@ -3,11 +3,7 @@ import { useEventListener, useInfiniteScroll, useKeyPress } from "ahooks";
 import { ArticleListReturn, getArticleList, readArticles } from "../../actions";
 import { useEffect, useRef, useState } from "react";
 import styles from "./index.module.css";
-import {
-  usePathname,
-  useRouter,
-  useSearchParams,
-} from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import StarToggle, { STAR_EVENT_NAME } from "../article/[id]/StarToggle";
 import Pubtime from "../article/[id]/Pubtime";
 import { produce } from "immer";
@@ -38,7 +34,8 @@ export default function ArticleList(props: Props) {
         }
         return getArticleList({
           limit,
-          offset: d.list.length,
+          lastId: d.list[d.list.length - 1].article.id,
+          lastPubtime: d.list[d.list.length - 1].article.pub_time,
           ...Object.fromEntries(params),
         });
       },

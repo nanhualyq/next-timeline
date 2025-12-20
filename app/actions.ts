@@ -11,6 +11,8 @@ import {
   eq,
   getTableColumns,
   inArray,
+  lt,
+  or,
   sql,
   SQLWrapper,
 } from "drizzle-orm";
@@ -63,15 +65,25 @@ export async function getArticleList(
 ): Promise<ArticleListReturn> {
   const schema = z.object({
     limit: z.number().default(50),
-    offset: z.number().default(0),
+    lastId: z.number().optional(),
+    lastPubtime: z.string().optional(),
     star: z.string().optional(),
     read: z.string().optional(),
     channel: z.string().optional(),
   });
-  const { limit, offset, star, read, channel } = schema.parse(options);
+  const { limit, lastId, lastPubtime, star, read, channel } =
+    schema.parse(options);
 
   const conditions: SQLWrapper[] = [];
 
+  if (lastId && lastPubtime) {
+    conditions.push(
+      or(
+        lt(articleTable.pub_time, lastPubtime),
+        and(eq(articleTable.pub_time, lastPubtime), lt(articleTable.id, lastId))
+      )!
+    );
+  }
   if (star) {
     conditions.push(eq(articleTable.star, true));
   }
@@ -90,9 +102,8 @@ export async function getArticleList(
     .from(articleTable)
     .leftJoin(channelTable, eq(articleTable.channel_id, channelTable.id))
     .limit(limit + 1)
-    .offset(offset)
     .where(and(...conditions))
-    .orderBy(desc(articleTable.pub_time));
+    .orderBy(desc(articleTable.pub_time), desc(articleTable.id));
 
   return {
     list,

@@ -83,6 +83,90 @@ describe("article table", () => {
       const res = await getArticleList({ channel: "2" });
       expect(res.list[0].article.title).toBe("test2");
     });
+    it("page 2 works, pubtime is same, has smaller id", async () => {
+      await insertArticles([
+        {
+          channel_id: 1,
+          title: "test1",
+          link: "test1",
+          pub_time: "2024-01-01T00:00:00.000Z",
+        },
+        {
+          channel_id: 1,
+          title: "test2",
+          link: "test2",
+          pub_time: "2024-01-01T00:00:00.000Z",
+        },
+      ]);
+      const res = await getArticleList({
+        lastId: 2,
+        lastPubtime: "2024-01-01T00:00:00.000Z",
+      });
+      expect(res.list[0].article.title).toBe("test1");
+    });
+    it("page 2 works, pubtime is same, no smaller id", async () => {
+      await insertArticles([
+        {
+          channel_id: 1,
+          title: "test1",
+          link: "test1",
+          pub_time: "2024-01-01T00:00:00.000Z",
+        },
+        {
+          channel_id: 1,
+          title: "test2",
+          link: "test2",
+          pub_time: "2024-01-01T00:00:00.000Z",
+        },
+      ]);
+      const res = await getArticleList({
+        lastId: 1,
+        lastPubtime: "2024-01-01T00:00:00.000Z",
+      });
+      expect(res.list).toHaveLength(0);
+    });
+    it("page 2 works, has early pubtime", async () => {
+      await insertArticles([
+        {
+          channel_id: 1,
+          title: "test1",
+          link: "test1",
+          pub_time: "2024-01-01T00:00:00.000Z",
+        },
+        {
+          channel_id: 1,
+          title: "test2",
+          link: "test2",
+          pub_time: "2023-01-01T00:00:00.000Z",
+        },
+      ]);
+      const res = await getArticleList({
+        lastId: 1,
+        lastPubtime: "2024-01-01T00:00:00.000Z",
+      });
+      expect(res.list[0].article.title).toBe("test2");
+    });
+    it("page 2 works, no early pubtime", async () => {
+      await insertArticles([
+        {
+          channel_id: 1,
+          title: "test1",
+          link: "test1",
+          pub_time: "2024-01-01T00:00:00.000Z",
+        },
+        {
+          channel_id: 1,
+          title: "test2",
+          link: "test2",
+          pub_time: "2023-01-01T00:00:00.000Z",
+        },
+      ]);
+      const res = await getArticleList({
+        lastId: 2,
+        lastPubtime: "2023-01-01T00:00:00.000Z",
+      });
+      expect(res.list).toHaveLength(0);
+    });
   });
 
   describe("insertArticles", () => {
