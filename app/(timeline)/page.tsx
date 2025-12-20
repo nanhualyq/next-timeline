@@ -21,7 +21,7 @@ export default async function Home({ searchParams }: Props) {
       </Suspense>
       <div style={{ flex: 1, overflow: "hidden" }}>
         <Suspense fallback="loading...">
-          <ArticleList key={JSON.stringify(params)} initData={articles} />;
+          <ArticleList key={JSON.stringify(params)} initData={articles} />
         </Suspense>
       </div>
     </div>
