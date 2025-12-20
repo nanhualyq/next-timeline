@@ -32,7 +32,11 @@ export async function channelCrawler(o: inputChannel) {
 export async function channelsCrawler() {
   const channels = await db.select().from(channelTable);
   for (const channel of channels) {
-    await channelCrawler(channel);
+    try {
+      await channelCrawler(channel);
+    } catch (error) {
+      console.error(error);
+    }
   }
   return {
     success: true,

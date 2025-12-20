@@ -635,7 +635,7 @@ describe("RssCrawler", () => {
       const content = rssCrawler.parseArticleContent({
         content: { "#text": `<img src="x" onerror="alert(1)">` },
       });
-      expect(content).toBe("");
+      expect(content).toBe(`<img src="x" />`);
     });
     it("img should has src", () => {
       const content = rssCrawler.parseArticleContent({

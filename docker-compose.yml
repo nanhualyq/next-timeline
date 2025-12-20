@@ -13,3 +13,9 @@ services:
     # user:
     #   - 1000:1000
     restart: always
+  cron:
+    build:
+      context: .
+      dockerfile: Dockerfile.cron
+    image: "cron"
+    restart: always

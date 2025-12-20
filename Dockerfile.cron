@@ -1,0 +1,19 @@
+FROM ubuntu:22.04
+
+# 安装 cron 和 curl
+RUN apt-get update && \
+    apt-get install -y cron curl && \
+    rm -rf /var/lib/apt/lists/*
+
+# 添加 cron 任务
+RUN echo "0 * * * * curl -s http://next-time:3000/channel/refresh >> /var/log/cron.log 2>&1" > /etc/cron.d/my-cron
+
+# 设置权限
+RUN chmod 0644 /etc/cron.d/my-cron && \
+    crontab /etc/cron.d/my-cron
+
+# 创建日志文件
+RUN touch /var/log/cron.log
+
+# 启动 cron（前台）
+CMD ["cron", "-f"]
