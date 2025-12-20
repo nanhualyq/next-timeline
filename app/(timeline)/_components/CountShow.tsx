@@ -25,7 +25,7 @@ export default function CountShow({
   } else if (channel) {
     n = unread[channel] || 0;
     size = "small";
-} else if (channels) {
+  } else if (channels) {
     n = channels.reduce((a, b) => a + (unread[b] || 0), 0);
     size = "small";
   }
