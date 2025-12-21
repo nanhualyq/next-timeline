@@ -10,7 +10,8 @@ export default function CloseButton() {
     router.back();
   }
 
-  useKeyPress(["esc", "enter"], close, {
+  useKeyPress(["enter"], close);
+  useKeyPress(["esc"], close, {
     events: ["keyup"],
   });
 
