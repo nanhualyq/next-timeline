@@ -140,8 +140,8 @@ export default function ArticleList(props: Props) {
   );
 
   useSwipe({
-    onSwipeLeft: () => moveActive(-1),
-    onSwipeRight: () => moveActive(1),
+    onSwipeLeft: () => moveActive(1),
+    onSwipeRight: () => moveActive(-1),
   });
 
   useEffect(() => {
