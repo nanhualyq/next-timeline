@@ -1,7 +1,6 @@
 "use client";
 import { countStar, countUnread } from "@/app/actions";
-import { useInterval, useTitle } from "ahooks";
-import { get } from "lodash-es";
+import { useInterval } from "ahooks";
 import { useEffect } from "react";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";

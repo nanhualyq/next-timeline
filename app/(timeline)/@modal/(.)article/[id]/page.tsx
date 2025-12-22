@@ -1,5 +1,4 @@
 import Article from "@/app/(timeline)/article/[id]/page";
-import { Modal } from "antd";
 import CloseButton from "./CloseButton";
 
 interface Props {
@@ -8,20 +7,12 @@ interface Props {
 
 export default function ArticleDialog(props: Props) {
   return (
-    <Modal
-      open={true}
-      footer={false}
-      closable={false}
-      centered={true}
-      width="96%"
-      styles={{
-        container: {
-          padding: 0,
-        },
-      }}
+    <dialog
+      open
+      className="absolute top-[4vh] m-auto w-[96vw] h-[92vh] border-2 border-stone-600 rounded-md [&_a]:text-blue-600 [&_h1]:text-2xl"
     >
       <CloseButton />
       <Article params={props.params} height="90vh" inModal={true} />
-    </Modal>
+    </dialog>
   );
 }

@@ -1,5 +1,5 @@
 "use client";
-import { CloseCircleTwoTone } from "@ant-design/icons";
+import { IconX } from "@tabler/icons-react";
 import { useKeyPress } from "ahooks";
 import { useRouter } from "next/navigation";
 
@@ -16,15 +16,13 @@ export default function CloseButton() {
   });
 
   return (
-    <CloseCircleTwoTone
-      twoToneColor="#aaa"
+    <IconX
       style={{
         position: "absolute",
         right: "2rem",
         top: "2rem",
         fontSize: "160%",
       }}
-      title="Close"
       onClick={close}
     />
   );
