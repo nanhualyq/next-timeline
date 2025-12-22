@@ -16,8 +16,12 @@ export default async function TimelineLayout({ children, modal }: Props) {
   return (
     <>
       <CountStore />
-      <Layout className={styles.root}>
-        <Sider theme="light" className={styles.sider}>
+      <Layout className={`${styles.root}`}>
+        <Sider
+          theme="light"
+          className={`${styles.sider} hidden md:block [body.show-asider_&]:block`}
+        >
+          {" "}
           <Suspense fallback="loading...">
             <SideMenu />
           </Suspense>

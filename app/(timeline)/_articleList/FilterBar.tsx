@@ -2,7 +2,6 @@
 import { readAllArticles } from "@/app/actions";
 import { useRouter, useSearchParams } from "next/navigation";
 import CountShow from "../_components/CountShow";
-import layoutStyles from "../layout.module.css";
 import { Button } from "@/components/ui/button";
 import { IconMenu2 } from "@tabler/icons-react";
 import { ButtonGroup } from "@/components/ui/button-group";
@@ -32,12 +31,6 @@ export default function FilterBar() {
     await readAllArticles();
     location.href = "/";
     location.reload();
-  }
-
-  function handleFoldAsider() {
-    document
-      .querySelector("." + layoutStyles.sider)
-      ?.classList.toggle(layoutStyles.sider_show);
   }
 
   const options = [
@@ -91,11 +84,18 @@ export default function FilterBar() {
   }
 
   return (
-    <div className="flex space-x-2 p-2">
-      <Button variant="ghost" onClick={handleFoldAsider} className="sm:hidden">
+    <div className="flex space-x-2 p-2 items-center">
+      <input
+        id="asider-toggle"
+        type="checkbox"
+        hidden
+        defaultChecked={resp?.sm}
+        onChange={() => document.body.classList.toggle("show-asider")}
+      />
+      <label htmlFor="asider-toggle" className="sm:hidden">
         <IconMenu2 />
         <CountShow isHome />
-      </Button>
+      </label>
       {ReadFilter}
       <Button variant="outline" onClick={handleReadAll}>
         Read All
