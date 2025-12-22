@@ -132,10 +132,16 @@ export default function ArticleList(props: Props) {
       starEl?.click();
     },
     m: () => readAbove(active),
+    o: () => {
+      const url = data?.list[active]?.article.link;
+      if (url) {
+        window.open(url);
+      }
+    },
   };
 
   useKeyPress(
-    ["j", "k", "uparrow", "downarrow", "enter", "home", "end", "f", "m"],
+    ["j", "k", "uparrow", "downarrow", "enter", "home", "end", "f", "m", "o"],
     (e, key) => invoke(keyCallbackMap, key)
   );
 
