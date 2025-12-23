@@ -3,7 +3,6 @@ import { use } from "react";
 import styles from "./page.module.css";
 import StarToggle from "./StarToggle";
 import Pubtime from "./Pubtime";
-import { Divider } from "antd";
 import ChannelTitle from "../../_components/ChannelTitle";
 
 interface Props {
@@ -35,7 +34,7 @@ export default function Article({ params, height, inModal }: Props) {
           dangerouslySetInnerHTML={{ __html: article.content + "" }}
         ></div>
       </div>
-      <Divider size="small" />
+      <hr className="mb-2 mt-2" />
       <div className={styles.footer}>
         <StarToggle article={article} inModal={inModal} />
         <Pubtime time={article.pub_time || ""} />

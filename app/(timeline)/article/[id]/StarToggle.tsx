@@ -2,9 +2,9 @@
 import { patchArticle } from "@/app/actions";
 import { LoadingOutlined, StarFilled, StarOutlined } from "@ant-design/icons";
 import { useBoolean, useRequest } from "ahooks";
-import { Modal } from "antd";
 import { useEffect } from "react";
 import { useCountStore } from "../../_components/CountStore";
+import Swal from "sweetalert2";
 
 interface Props {
   article: {
@@ -40,12 +40,7 @@ export default function StarToggle({ article, inModal }: Props) {
       }
     },
     onError(error) {
-      const modal = Modal.error({
-        content: error + "",
-        onOk() {
-          modal.destroy();
-        },
-      });
+      Swal.fire(error + "");
     },
   });
   const C = isStar ? StarFilled : StarOutlined;
