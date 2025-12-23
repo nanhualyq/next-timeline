@@ -8,11 +8,17 @@ import StarToggle, { STAR_EVENT_NAME } from "../article/[id]/StarToggle";
 import Pubtime from "../article/[id]/Pubtime";
 import { produce } from "immer";
 import { invoke } from "lodash-es";
-import { Divider, Result } from "antd";
 import ChannelTitle from "../_components/ChannelTitle";
-import { EyeOutlined } from "@ant-design/icons";
 import { useCountStore } from "../_components/CountStore";
 import useSwipe from "./useSwipe";
+import { Spinner } from "@/components/ui/spinner";
+import {
+  Empty,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import { IconEye, IconInfoOctagon } from "@tabler/icons-react";
 
 interface Props {
   initData: ArticleListReturn;
@@ -176,7 +182,16 @@ export default function ArticleList(props: Props) {
   }
 
   if (!loading && (!data || !data.list.length)) {
-    return <Result status="info" title="No More Articles!" />;
+    return (
+      <Empty>
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <IconInfoOctagon />
+          </EmptyMedia>
+          <EmptyTitle>No Articles Yet</EmptyTitle>
+        </EmptyHeader>
+      </Empty>
+    );
   }
 
   return (
@@ -224,14 +239,19 @@ export default function ArticleList(props: Props) {
                   e.stopPropagation();
                   readAbove(index);
                 }}
+                className="flex gap-1 items-center"
               >
-                <EyeOutlined /> Read above
+                <IconEye /> Read above
               </a>
             </div>
           </li>
         );
       })}
-      {loadingMore && <Divider>Loading More...</Divider>}
+      {loadingMore && (
+        <p className="flex flex-col justify-center items-center">
+          <Spinner /> Loading...
+        </p>
+      )}
     </ul>
   );
 }
