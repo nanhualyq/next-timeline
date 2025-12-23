@@ -1,51 +1,88 @@
 "use client";
 import { channelCrawler } from "@/app/actions";
+import { Button } from "@/components/ui/button";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import { useRequest } from "ahooks";
-import { Button, Form, Input, message, Modal } from "antd";
 import { useRouter } from "next/navigation";
+import { Controller, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import Swal from "sweetalert2";
+import z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function AddForm() {
+  const formSchema = z.object({
+    type: z.string(),
+    link: z.url(),
+  });
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      type: "rss",
+      link: "",
+    },
+  });
   const router = useRouter();
-  const [messageApi, contextHolder] = message.useMessage();
   const { loading, run } = useRequest(channelCrawler, {
     manual: true,
     onSuccess(data) {
-      messageApi.open({ type: "success", content: "success" });
+      toast("success");
       if (data.id) {
         router.push(`/?channel=${data.id}`);
         location.reload();
       }
     },
     onError(error) {
-      const modal = Modal.error({
-        content: error + "",
-        onOk() {
-          modal.destroy();
-        },
-      });
+      Swal.fire(error + "");
     },
   });
 
   return (
-    <>
-      {contextHolder}
-      <Form onFinish={run} style={{ padding: "1rem" }}>
-        <Form.Item name="type" initialValue="rss" hidden>
-          <Input />
-        </Form.Item>
-        <Form.Item
-          label="feed address"
+    <form onSubmit={form.handleSubmit(run)} style={{ padding: "1rem" }}>
+      <FieldGroup>
+        <Controller
+          name="type"
+          control={form.control}
+          rules={{ required: true }}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor="channel-form-type">Type</FieldLabel>
+              <Input
+                {...field}
+                id="channel-form-type"
+                data-invalid={fieldState.invalid}
+                autoComplete="off"
+                disabled
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+        <Controller
           name="link"
-          rules={[{ required: true }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item label={null}>
-          <Button type="primary" htmlType="submit" loading={loading}>
-            Submit
-          </Button>
-        </Form.Item>
-      </Form>
-    </>
+          control={form.control}
+          rules={{ required: "link isrequired" }}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor="channel-form-link">Feed Address</FieldLabel>
+              <Input
+                {...field}
+                id="channel-form-link"
+                data-invalid={fieldState.invalid}
+                autoComplete="off"
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+      </FieldGroup>
+      <Button disabled={loading}>Submit</Button>
+    </form>
   );
 }
