@@ -1,11 +1,21 @@
 "use client";
 import { channelTable } from "@/src/db/schema";
 import { useRequest } from "ahooks";
-import { Button, Form, Input, Modal, Space, Spin } from "antd";
-import { createSchemaFieldRule } from "antd-zod";
 import { createUpdateSchema } from "drizzle-zod";
 import { useRouter } from "next/navigation";
 import z from "zod";
+import Swal from "sweetalert2";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Input } from "@/components/ui/input";
 
 type Channel = typeof channelTable.$inferSelect;
 interface Props {
@@ -15,14 +25,16 @@ interface Props {
 
 export default function ChannelEditForm({ channel, save }: Props) {
   const router = useRouter();
-  const [form] = Form.useForm();
   const keys = Object.keys(channel);
-  const schema = createUpdateSchema(channelTable, {
+  const formSchema = createUpdateSchema(channelTable, {
     link: () => z.url(),
     icon: () => z.union([z.url(), z.literal("")]).optional(),
     title: () => z.string().min(1, "required"),
   });
-  const rule = createSchemaFieldRule(schema);
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: channel,
+  });
 
   const { loading, run } = useRequest(save, {
     manual: true,
@@ -31,47 +43,56 @@ export default function ChannelEditForm({ channel, save }: Props) {
       location.reload();
     },
     onError(error) {
-      const modal = Modal.error({
-        content: error + "",
-        onOk() {
-          modal.destroy();
-        },
-      });
+      Swal.fire(error + "");
     },
   });
 
   return (
-    <Form
-      form={form}
-      initialValues={channel}
-      style={{ padding: "1rem" }}
-      labelCol={{ span: 2 }}
-      onFinish={run}
-    >
-      {loading && <Spin fullscreen />}
-      {keys.map((k) => {
-        return (
-          <Form.Item
-            key={k}
-            label={k}
-            name={k}
-            hidden={k === "id"}
-            rules={[rule]}
-          >
-            <Input />
-          </Form.Item>
-        );
-      })}
-      <Form.Item>
-        <Space>
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
-          <Button htmlType="button" onClick={() => form.resetFields()}>
-            Reset
-          </Button>
-        </Space>
-      </Form.Item>
-    </Form>
+    <form onSubmit={form.handleSubmit((data) => run(data as Channel))}>
+      <Card>
+        <CardContent>
+          <FieldGroup>
+            {keys.map((k) => (
+              <Controller
+                key={k}
+                name={k as "id"}
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor={`from-label-channel-edit-${k}`}>
+                      {k}
+                    </FieldLabel>
+                    <Input
+                      {...field}
+                      id={`from-label-channel-edit-${k}`}
+                      data-invalid={fieldState.invalid}
+                      autoComplete="off"
+                      disabled={["id", "type"].includes(k)}
+                    />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+            ))}
+          </FieldGroup>
+        </CardContent>
+        <CardFooter>
+          <Field orientation="horizontal">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => form.reset()}
+            >
+              Reset
+            </Button>
+            <Button type="submit" disabled={loading}>
+              Submit
+            </Button>
+          </Field>
+        </CardFooter>
+      </Card>
+    </form>
   );
 }

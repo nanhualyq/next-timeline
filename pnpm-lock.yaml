@@ -50,9 +50,6 @@ importers:
       antd:
         specifier: ^6.0.1
         version: 6.0.1(date-fns@4.1.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
-      antd-zod:
-        specifier: ^8.0.0
-        version: 8.0.0(antd@6.0.1(date-fns@4.1.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(zod@4.1.13)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -2371,12 +2368,6 @@ packages:
   ansi-styles@5.2.0:
     resolution: {integrity: sha512-Cxwpt2SfTzTtXcfOlzGEee8O+c+MmUgGrNiBcXnuWxuFJHe6a5Hz7qwhwe5OgaSYI0IJvkLqWX1ASG+cJOkEiA==}
     engines: {node: '>=10'}
-
-  antd-zod@8.0.0:
-    resolution: {integrity: sha512-BvauDzihlu+p6OPanRhgBxSjFKSrCnZ5Cu2sU+51OaaMNvQ+/Kw4sMCK6653aJg7PkjCng9ZplGxnoDq+Ab6cQ==}
-    peerDependencies:
-      antd: ^6.0.0
-      zod: '>=3.25.0'
 
   antd@6.0.1:
     resolution: {integrity: sha512-/kCH3057suoqe1D/JJ4lxvkESZWJr1+ISTbRnbxk99gXJWaxYp7pCX+4CZSdvVDKFpU1YBkzHn9/ZVNNyHImqQ==}
@@ -6295,12 +6286,6 @@ snapshots:
       color-convert: 2.0.1
 
   ansi-styles@5.2.0: {}
-
-  antd-zod@8.0.0(antd@6.0.1(date-fns@4.1.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(zod@4.1.13):
-    dependencies:
-      antd: 6.0.1(date-fns@4.1.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
-      lodash.merge: 4.6.2
-      zod: 4.1.13
 
   antd@6.0.1(date-fns@4.1.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
     dependencies:

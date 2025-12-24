@@ -67,7 +67,6 @@ export default function AddForm() {
         <Controller
           name="link"
           control={form.control}
-          rules={{ required: "link isrequired" }}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor="channel-form-link">Feed Address</FieldLabel>
