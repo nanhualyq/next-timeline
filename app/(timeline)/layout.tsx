@@ -36,7 +36,7 @@ export default async function TimelineLayout({ children, modal }: Props) {
             </Suspense>
           </SidebarContent>
         </Sidebar>
-        <main>{children}</main>
+        <main className="min-w-full">{children}</main>
       </SidebarProvider>
       <CountStore />
       {modal}

@@ -9,6 +9,8 @@ import { db } from "../db";
 import { insertArticles } from "../db/article";
 import { setGlobalDispatcher, Agent } from "undici";
 import sanitizeHtml from "sanitize-html";
+import { eq } from "drizzle-orm";
+import { addOrGetChannel } from "../db/channel";
 
 // Set the global connection timeout to 20 seconds
 setGlobalDispatcher(
@@ -174,11 +176,10 @@ export default class RssCrawler extends CrawlerBase {
     }
     const channel = this.parseChannel();
     channel.icon = await this.parseFavicon();
-    const res = await db.insert(channelTable).values(channel);
-    this.channel = {
-      id: Number(res.lastInsertRowid),
-      ...channel,
-    } as typeof channelTable.$inferInsert;
+    const res = await addOrGetChannel(channel);
+    if (res) {
+      this.channel = res;
+    }
   }
   saveArticles() {
     if (!this.channel.id) {

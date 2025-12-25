@@ -1,16 +1,8 @@
-import {
-  describe,
-  it,
-  expect,
-  vi,
-  beforeEach,
-  afterEach,
-  beforeAll,
-} from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import RssCrawler from "../../src/crawler/RssCrawler";
 import { crawlerFactor } from "@/src/crawler/factor";
-import { db } from "@/src/db";
 import * as articleDb from "@/src/db/article";
+import * as channelDb from "@/src/db/channel";
 
 // 模擬 fetch API
 const mockFetch = vi.fn();
@@ -386,7 +378,7 @@ describe("RssCrawler", () => {
   });
 
   describe("saveChannel", () => {
-    it("skip save to db when it exists", async () => {
+    it("skip save to db when it has id", async () => {
       const p = { id: 1, type: "rss", link: "" };
       const factory = crawlerFactor(p);
       await factory.saveChannel();
@@ -400,19 +392,12 @@ describe("RssCrawler", () => {
         link: "http://a.com",
       };
       factory.parseChannel = vi.fn().mockReturnValueOnce(mockChannel);
-      const spy = vi.spyOn(db, "insert").mockReturnValueOnce({
-        // @ts-expect-error just for test
-        values: async () => ({ lastInsertRowid: 1 }),
-      });
       vi.spyOn(factory, "parseFavicon").mockReturnValueOnce(
         Promise.resolve("")
       );
+      const spy = vi.spyOn(channelDb, "addOrGetChannel");
       await factory.saveChannel();
-      expect(factory.channel).toEqual({
-        id: 1,
-        ...mockChannel,
-      });
-      spy.mockRestore();
+      expect(spy).toBeCalled();
     });
   });
 

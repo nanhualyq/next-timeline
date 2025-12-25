@@ -1,6 +1,7 @@
 import { deleteChannel } from "@/app/actions";
 import { db } from "@/src/db";
 import { insertArticles } from "@/src/db/article";
+import { addOrGetChannel } from "@/src/db/channel";
 import { channelTable } from "@/src/db/schema";
 import { execSync } from "child_process";
 import {
@@ -58,5 +59,21 @@ describe("channel table", () => {
       console.log(error);
     }
     await expect(db.select().from(channelTable)).resolves.toHaveLength(0);
+  });
+});
+
+describe("addOrGetChannel", () => {
+  it("add one", async () => {
+    const channel = makeChannel();
+    channel.link = "http://a.com";
+    const res = await addOrGetChannel(channel);
+    expect(res?.id).toBeTypeOf("number");
+  });
+  it("get one when link is repeat", async () => {
+    const channel = makeChannel();
+    channel.link = "http://a.com";
+    const res = await addOrGetChannel(channel);
+    const res2 = await addOrGetChannel(channel);
+    expect(res?.id).toBe(res2?.id);
   });
 });

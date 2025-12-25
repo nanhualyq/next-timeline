@@ -39,6 +39,7 @@ export default function AddForm() {
       }
     },
     onError(error) {
+      console.dir(error);
       Swal.fire(error + "");
     },
   });
