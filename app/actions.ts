@@ -169,11 +169,8 @@ export async function countUnread() {
 }
 
 export async function countStar() {
-  const res = await db
-    .select({
-      count: sql<number>`cast(count(${articleTable.id}) as int)`,
-    })
-    .from(articleTable)
-    .where(eq(articleTable.star, true));
-  return res[0];
+  const count = await db.$count(articleTable, eq(articleTable.star, true));
+  return {
+    count,
+  };
 }
