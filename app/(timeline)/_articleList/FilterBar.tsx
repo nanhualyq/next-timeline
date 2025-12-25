@@ -3,7 +3,6 @@ import { readAllArticles } from "@/app/actions";
 import { useRouter, useSearchParams } from "next/navigation";
 import CountShow from "../_components/CountShow";
 import { Button } from "@/components/ui/button";
-import { IconMenu2 } from "@tabler/icons-react";
 import { ButtonGroup } from "@/components/ui/button-group";
 import {
   Select,
@@ -15,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useResponsive } from "ahooks";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 export default function FilterBar() {
   const sp = useSearchParams();
@@ -85,17 +85,12 @@ export default function FilterBar() {
 
   return (
     <div className="flex space-x-2 p-2 items-center">
-      <input
-        id="asider-toggle"
-        type="checkbox"
-        hidden
-        defaultChecked={resp?.sm}
-        onChange={() => document.body.classList.toggle("show-asider")}
-      />
-      <label htmlFor="asider-toggle" className="sm:hidden">
-        <IconMenu2 />
-        <CountShow isHome />
-      </label>
+      {!resp?.sm && (
+        <>
+          <SidebarTrigger />
+          <CountShow isHome />
+        </>
+      )}
       {ReadFilter}
       <Button variant="outline" onClick={handleReadAll}>
         Read All

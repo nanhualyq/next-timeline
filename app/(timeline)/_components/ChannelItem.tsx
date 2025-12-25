@@ -1,8 +1,6 @@
 "use client";
 import { channelTable } from "@/src/db/schema";
-import styles from "./ChannelItem.module.css";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef } from "react";
 import {
   channelCrawler,
   deleteArticlesByChannel,
@@ -26,6 +24,11 @@ import {
 } from "@tabler/icons-react";
 import { toast } from "sonner";
 import Swal from "sweetalert2";
+import {
+  SidebarMenuAction,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/components/ui/sidebar";
 
 interface Props {
   channel: typeof channelTable.$inferSelect;
@@ -34,30 +37,23 @@ interface Props {
 export default function ChannelItem({ channel }: Props) {
   const sp = useSearchParams();
   const isFiltering = sp.get("channel") === channel.id + "";
-  const rootRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-
-  useEffect(() => {
-    if (isFiltering) {
-      const details = rootRef.current?.closest("details");
-      if (details) {
-        details.open = true;
-      }
-    }
-  }, [isFiltering]);
 
   async function handleDelete(action: string) {
     const isDelete = action === "Delete";
     const title = isDelete
       ? "Delete this channel?"
       : "Delete all articles of this channel";
-    await Swal.fire({
+    const res = await Swal.fire({
       title,
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: action,
       cancelButtonText: "Cancel",
     });
+    if (!res.isConfirmed) {
+      return;
+    }
     toast.promise(
       (isDelete ? deleteChannel : deleteArticlesByChannel)(channel.id),
       {
@@ -85,15 +81,16 @@ export default function ChannelItem({ channel }: Props) {
   }
 
   return (
-    <div
-      ref={rootRef}
-      className={`${styles.root} ${isFiltering ? styles.active : ""}`}
-    >
-      <ChannelTitle channel={channel} style={{ flex: 1 }} />
-      <CountShow channel={channel.id} />
+    <SidebarMenuItem key={channel.id}>
+      <SidebarMenuButton isActive={isFiltering}>
+        <ChannelTitle channel={channel} />
+        <CountShow channel={channel.id} />
+      </SidebarMenuButton>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <IconDots />
+          <SidebarMenuAction>
+            <IconDots />
+          </SidebarMenuAction>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-16" align="start">
           <DropdownMenuGroup>
@@ -124,6 +121,6 @@ export default function ChannelItem({ channel }: Props) {
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
-    </div>
+    </SidebarMenuItem>
   );
 }

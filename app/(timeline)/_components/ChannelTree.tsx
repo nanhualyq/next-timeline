@@ -1,36 +1,65 @@
-import { db } from "@/src/db";
-import { channelTable } from "@/src/db/schema";
+"use client";
 import { groupBy } from "lodash-es";
-import styles from "./channel_tree.module.css";
 import ChannelItem from "./ChannelItem";
-import { FolderOutlined } from "@ant-design/icons";
 import CountShow from "./CountShow";
 import { Suspense } from "react";
+import {
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarMenu,
+} from "@/components/ui/sidebar";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { ChevronDown } from "lucide-react";
+import { channelTable } from "@/src/db/schema";
+import { useSearchParams } from "next/navigation";
 
-export default async function ChannelTree() {
-  const channels = await db.select().from(channelTable);
+interface Props {
+  channels: (typeof channelTable.$inferSelect)[];
+}
+
+export default function ChannelTree({ channels }: Props) {
   const tree = groupBy(channels, (c) => c.category || "UNCATEGORIZED");
+  const sp = useSearchParams();
+
+  function shouldUnfold(category: string) {
+    return tree[category].some((c) => sp.get("channel") === c.id + "");
+  }
 
   return (
-    <div className={styles.root}>
+    <>
       {Object.keys(tree).map((k) => (
-        // if default open by <ChannelItem /> controls
-        <details key={k}>
-          <summary className={styles.category}>
-            <FolderOutlined /> {k}
-            <CountShow channels={tree[k].map((c) => c.id)} />
-          </summary>
-          <ul className={styles.c_ul}>
-            {tree[k].map((c) => (
-              <li key={c.id}>
-                <Suspense fallback="loading...">
-                  <ChannelItem channel={c} />
-                </Suspense>
-              </li>
-            ))}
-          </ul>
-        </details>
+        <Collapsible
+          key={k}
+          defaultOpen={shouldUnfold(k)}
+          className="group/collapsible"
+        >
+          <SidebarGroup>
+            <SidebarGroupLabel asChild>
+              <CollapsibleTrigger>
+                {k}
+                <CountShow channels={tree[k].map((c) => c.id)} />
+                <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
+              </CollapsibleTrigger>
+            </SidebarGroupLabel>
+            <CollapsibleContent>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {tree[k].map((c) => (
+                    <Suspense key={c.id} fallback="loading...">
+                      <ChannelItem channel={c} />
+                    </Suspense>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </CollapsibleContent>
+          </SidebarGroup>
+        </Collapsible>
       ))}
-    </div>
+    </>
   );
 }

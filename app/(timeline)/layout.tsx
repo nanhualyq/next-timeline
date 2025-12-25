@@ -1,11 +1,16 @@
-import { Divider, Layout } from "antd";
-import Sider from "antd/es/layout/Sider";
-import { Content } from "antd/es/layout/layout";
 import SideMenu from "./_components/SideMenu";
 import ChannelTree from "./_components/ChannelTree";
-import styles from "./layout.module.css";
 import CountStore from "./_components/CountStore";
 import { Suspense } from "react";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarHeader,
+  SidebarProvider,
+  SidebarSeparator,
+} from "@/components/ui/sidebar";
+import { db } from "@/src/db";
+import { channelTable } from "@/src/db/schema";
 
 interface Props {
   children: React.ReactNode;
@@ -13,23 +18,27 @@ interface Props {
 }
 
 export default async function TimelineLayout({ children, modal }: Props) {
+  const channels = await db.select().from(channelTable);
+
   return (
     <>
+      <SidebarProvider>
+        <Sidebar>
+          <SidebarHeader>
+            <Suspense fallback="loading...">
+              <SideMenu />
+            </Suspense>
+            <SidebarSeparator />
+          </SidebarHeader>
+          <SidebarContent className="gap-0">
+            <Suspense fallback="loading...">
+              <ChannelTree channels={channels} />
+            </Suspense>
+          </SidebarContent>
+        </Sidebar>
+        <main>{children}</main>
+      </SidebarProvider>
       <CountStore />
-      <Layout className={`${styles.root}`}>
-        <Sider
-          theme="light"
-          className={`${styles.sider} hidden md:block [body.show-asider_&]:block`}
-        >
-          {" "}
-          <Suspense fallback="loading...">
-            <SideMenu />
-          </Suspense>
-          <Divider size="small" />
-          <ChannelTree />
-        </Sider>
-        <Content>{children}</Content>
-      </Layout>
       {modal}
     </>
   );

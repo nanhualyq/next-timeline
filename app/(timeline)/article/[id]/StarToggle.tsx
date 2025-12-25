@@ -1,10 +1,11 @@
 "use client";
 import { patchArticle } from "@/app/actions";
-import { LoadingOutlined, StarFilled, StarOutlined } from "@ant-design/icons";
 import { useBoolean, useRequest } from "ahooks";
 import { useEffect } from "react";
 import { useCountStore } from "../../_components/CountStore";
 import Swal from "sweetalert2";
+import { IconStar, IconStarFilled } from "@tabler/icons-react";
+import { Spinner } from "@/components/ui/spinner";
 
 interface Props {
   article: {
@@ -43,14 +44,14 @@ export default function StarToggle({ article, inModal }: Props) {
       Swal.fire(error + "");
     },
   });
-  const C = isStar ? StarFilled : StarOutlined;
+  const C = isStar ? IconStarFilled : IconStar;
   const style = { fontSize: "1.4rem", color: "gray" };
   if (isStar) {
     style.color = "orange";
   }
 
   if (loading) {
-    return <LoadingOutlined style={style} />;
+    return <Spinner className="size-6" />;
   }
   return <C style={style} onClick={() => run({ id: id, star: !isStar })} />;
 }

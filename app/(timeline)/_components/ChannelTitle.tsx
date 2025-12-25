@@ -1,5 +1,5 @@
 import { channelTable } from "@/src/db/schema";
-import { BorderOutlined } from "@ant-design/icons";
+import { IconSquare } from "@tabler/icons-react";
 import Link from "next/link";
 import { CSSProperties, MouseEventHandler } from "react";
 
@@ -13,13 +13,13 @@ export default function ChannelTitle({ channel, style, onClick }: Props) {
   return (
     <Link
       href={`/?channel=${channel.id}`}
-      style={{ ...style, display: "flex", gap: "4px", alignItems: 'center' }}
+      style={{ ...style, display: "flex", gap: "4px", alignItems: "center" }}
       onClick={onClick}
     >
       {channel.icon ? (
         <img src={channel.icon} width={16} height={16} />
       ) : (
-        <BorderOutlined />
+        <IconSquare size={16} />
       )}
       {channel.title}
     </Link>
