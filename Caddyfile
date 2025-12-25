@@ -1,0 +1,7 @@
+:80 {
+    basicauth {
+        {$BASIC_AUTH_USER} "{$BASIC_AUTH_PASS}"
+    }
+
+    reverse_proxy {$UPSTREAM_HOST}:{$UPSTREAM_PORT}
+}

@@ -4,18 +4,31 @@ services:
       context: .
       dockerfile: Dockerfile
     image: "next-timeline"
-    ports:
-      - 8899:3000
+    # ports:
+    #   - 8899:3000
     environment:
       - DB_FILE_NAME=file:prod.db
     volumes:
       - ./prod.db:/app/prod.db
-    # user:
-    #   - 1000:1000
     restart: always
   cron:
     build:
       context: .
       dockerfile: Dockerfile.cron
     image: "cron"
+    restart: always
+  caddy:
+    image: caddy:alpine
+    ports:
+      - 8899:80
+    env_file:
+      - .env.local
+    environment:
+      - BASIC_AUTH_USER=admin
+      # docker run --rm caddy:alpine caddy hash-password --plaintext 'secret'
+      # - BASIC_AUTH_PASS="$2a$14$uScm5Gb6tJ.i950wbwphIe4LSr.YQZefIpvva9S.N.IgmjDBL4JPK"
+      - UPSTREAM_HOST=next-timeline
+      - UPSTREAM_PORT=3000
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
     restart: always
