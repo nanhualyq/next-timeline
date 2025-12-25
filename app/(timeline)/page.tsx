@@ -15,7 +15,7 @@ export default async function Home({ searchParams }: Props) {
     ...params,
   });
   return (
-    <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
+    <div className="flex flex-col overflow-hidden h-screen">
       <Suspense fallback="loading...">
         <FilterBar />
       </Suspense>
