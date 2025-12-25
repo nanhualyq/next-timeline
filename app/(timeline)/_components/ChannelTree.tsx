@@ -38,7 +38,7 @@ export default function ChannelTree({ channels }: Props) {
           defaultOpen={shouldUnfold(k)}
           className="group/collapsible"
         >
-          <SidebarGroup>
+          <SidebarGroup className="py-0.5">
             <SidebarGroupLabel asChild>
               <CollapsibleTrigger>
                 {k}
