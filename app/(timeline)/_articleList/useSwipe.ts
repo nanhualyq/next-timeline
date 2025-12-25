@@ -25,7 +25,7 @@ export default function useSwipe(options: Options) {
       const endX = e.changedTouches[0].clientX;
       const deltaX = endX - startX;
 
-      if (deltaX > 50) {
+      if (deltaX > 100) {
         options?.onSwipeRight?.();
       } else if (deltaX < -50) {
         options?.onSwipeLeft?.();
