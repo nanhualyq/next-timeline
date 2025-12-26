@@ -106,7 +106,7 @@ export async function getArticleList(
     .orderBy(desc(articleTable.pub_time), desc(articleTable.id));
 
   return {
-    list,
+    list: list.slice(0, limit),
     hasMore: list.length > limit,
   };
 }
