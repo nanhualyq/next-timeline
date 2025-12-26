@@ -1,57 +1,90 @@
 "use client";
 import { patchArticle } from "@/app/actions";
-import { useBoolean, useRequest } from "ahooks";
-import { useEffect } from "react";
 import { useCountStore } from "../../_components/CountStore";
-import Swal from "sweetalert2";
 import { IconStar, IconStarFilled } from "@tabler/icons-react";
 import { Spinner } from "@/components/ui/spinner";
+import { create } from "zustand";
+import { immer } from "zustand/middleware/immer";
+
+type StarState = {
+  isStar: boolean;
+  loading: boolean;
+  error: string;
+};
+
+type StarStore = {
+  starMap: Record<number, StarState>;
+  initStar: (id: number, star: boolean) => void;
+  toggleStar: (id: number) => Promise<void>;
+};
+
+export const useStarStore = create<StarStore>()(
+  immer((set, get) => ({
+    starMap: {},
+    initStar(id: number, star: boolean) {
+      set((state) => {
+        state.starMap[id] = {
+          isStar: star,
+          loading: false,
+          error: "",
+        };
+      });
+    },
+    toggleStar: async (id: number) => {
+      try {
+        set((state) => {
+          state.starMap[id]["loading"] = true;
+        });
+        const star = !get().starMap[id].isStar;
+        await patchArticle({ id, star });
+        set((state) => {
+          state.starMap[id]["isStar"] = star;
+        });
+        useCountStore.getState().plusStar(star ? 1 : -1);
+      } catch (error) {
+        set((state) => {
+          state.starMap[id]["error"] = error + "";
+        });
+      } finally {
+        set((state) => {
+          state.starMap[id]["loading"] = false;
+        });
+      }
+    },
+  }))
+);
 
 interface Props {
   article: {
     id: number;
     star: boolean | null;
   };
-  inModal?: boolean;
 }
 
-export const STAR_EVENT_NAME = "article-toggle-star-in-modal";
+export default function StarToggle({ article }: Props) {
+  const { id } = article;
+  const { starMap, toggleStar } = useStarStore();
+  const { isStar, loading, error } = starMap[id] || {};
 
-export default function StarToggle({ article, inModal }: Props) {
-  const { id, star } = article;
-  const [isStar, { toggle, set }] = useBoolean();
-  const { plusStar } = useCountStore();
-
-  useEffect(() => {
-    set(!!star);
-  }, [star]);
-
-  const { loading, run } = useRequest(patchArticle, {
-    manual: true,
-    onSuccess: () => {
-      toggle();
-      plusStar(isStar ? -1 : 1);
-
-      if (inModal) {
-        window.dispatchEvent(
-          new CustomEvent(STAR_EVENT_NAME, {
-            detail: { id, star: !isStar },
-          })
-        );
-      }
-    },
-    onError(error) {
-      Swal.fire(error + "");
-    },
-  });
   const C = isStar ? IconStarFilled : IconStar;
   const style = { fontSize: "1.4rem", color: "gray" };
   if (isStar) {
     style.color = "orange";
   }
+  const starComponent = <C style={style} onClick={() => toggleStar(id)} />;
 
   if (loading) {
     return <Spinner className="size-6" />;
   }
-  return <C style={style} onClick={() => run({ id: id, star: !isStar })} />;
+  if (error) {
+    return (
+      <div>
+        <span className="absolute -translate-y-full bg-red-700 p-1 rounded-md text-white">
+          {error}
+        </span>
+        {starComponent}
+      </div>
+    );
+  }
+  return starComponent;
 }

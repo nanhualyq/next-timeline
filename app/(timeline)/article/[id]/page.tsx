@@ -8,10 +8,9 @@ import ChannelTitle from "../../_components/ChannelTitle";
 interface Props {
   params: Promise<{ id: string }>;
   height: string;
-  inModal: boolean;
 }
 
-export default function Article({ params, height, inModal }: Props) {
+export default function Article({ params, height }: Props) {
   const { id } = use(params);
   const { article, channel } = use(getArticle(+id));
   if (!article.read) {
@@ -36,7 +35,7 @@ export default function Article({ params, height, inModal }: Props) {
       </div>
       <hr className="mb-2 mt-2" />
       <div className={styles.footer}>
-        <StarToggle article={article} inModal={inModal} />
+        <StarToggle article={article} />
         <Pubtime time={article.pub_time || ""} />
         <ChannelTitle channel={channel!} />
         {article.author && <span>by {article.author}</span>}

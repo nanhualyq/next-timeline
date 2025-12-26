@@ -1,10 +1,10 @@
 "use client";
-import { useEventListener, useInfiniteScroll, useKeyPress } from "ahooks";
+import { useInfiniteScroll, useKeyPress } from "ahooks";
 import { ArticleListReturn, getArticleList, readArticles } from "../../actions";
 import { useEffect, useRef, useState } from "react";
 import styles from "./index.module.css";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import StarToggle, { STAR_EVENT_NAME } from "../article/[id]/StarToggle";
+import StarToggle, { useStarStore } from "../article/[id]/StarToggle";
 import Pubtime from "../article/[id]/Pubtime";
 import { produce } from "immer";
 import { invoke } from "lodash-es";
@@ -31,6 +31,7 @@ export default function ArticleList(props: Props) {
   const ulRef = useRef<HTMLUListElement>(null);
   const params = useSearchParams();
   const { plusUnread } = useCountStore();
+  const { initStar, toggleStar } = useStarStore();
 
   const { data, loadingMore, mutate, loading } =
     useInfiniteScroll<ArticleListReturn>(
@@ -48,6 +49,10 @@ export default function ArticleList(props: Props) {
       {
         target: ulRef,
         isNoMore: (data) => !data?.hasMore,
+        onSuccess: (data) =>
+          data.list.forEach((item) =>
+            initStar(item.article.id, !!item.article.star)
+          ),
       }
     );
 
@@ -72,27 +77,6 @@ export default function ArticleList(props: Props) {
           draft.list[index].article.read = true;
         })
       );
-    }
-  }
-
-  useEventListener(STAR_EVENT_NAME, handleStarToggle);
-
-  function handleStarToggle(event: Event): void {
-    if ("detail" in event) {
-      const { id, star } = event.detail as { id: number; star: boolean };
-      if (data?.list) {
-        const targetIndex = data.list.findIndex(
-          (item) => item.article.id === id
-        );
-        if (targetIndex === -1) {
-          return;
-        }
-        mutate(
-          produce(data, (draft) => {
-            draft.list[targetIndex].article.star = star;
-          })
-        );
-      }
     }
   }
 
@@ -132,10 +116,9 @@ export default function ArticleList(props: Props) {
       }
     },
     f() {
-      const starEl = ulRef?.current?.querySelector(
-        `.${styles["li_active"]} .anticon-star`
-      ) as HTMLSpanElement;
-      starEl?.click();
+      if (data) {
+        toggleStar(data?.list[active]?.article.id);
+      }
     },
     m: () => readAbove(active),
     o: () => {
