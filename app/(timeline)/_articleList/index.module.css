@@ -22,6 +22,7 @@
     "cover others";
   grid-column-gap: 8px;
   grid-row-gap: 12px;
+  border: 1px solid gray;
 }
 @media screen and (max-width: 768px) {
   .li {
@@ -35,12 +36,12 @@
   margin-bottom: 1rem;
 }
 .li-read {
-  filter: grayscale(50%);
-  opacity: 0.8;
-  background-color: #eee;
+  color: gray;
+  border-color: #ddd;
 }
 .li_active {
-  border: 2px solid #000;
+  border-color: black;
+  background-color: #eee;
 }
 
 .cover {
@@ -54,9 +55,13 @@
 .title {
   grid-area: title;
 }
+.title a {
+  text-decoration: underline;
+  font-size: large;
+}
 .summary {
   grid-area: summary;
-  max-height: 4em;
+  max-height: 4.5em;
   overflow: hidden;
   text-overflow: ellipsis;
 }
