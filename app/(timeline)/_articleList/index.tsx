@@ -208,15 +208,17 @@ export default function ArticleList(props: Props) {
             </div>
             <div className={styles.summary}>{article.summary}</div>
             <div className={styles.others}>
-              <span onClick={(e) => e.stopPropagation()}>
-                <StarToggle article={article} />
-              </span>
               <Pubtime time={article.pub_time} />
               <ChannelTitle
                 channel={channel!}
                 onClick={(e) => e.stopPropagation()}
               />
               {article.author && <span>by {article.author}</span>}
+            </div>
+            <div className={styles.actions}>
+              <span onClick={(e) => e.stopPropagation()}>
+                <StarToggle article={article} />
+              </span>
               <a
                 onClick={(e) => {
                   e.stopPropagation();
@@ -224,7 +226,8 @@ export default function ArticleList(props: Props) {
                 }}
                 className="flex gap-1 items-center"
               >
-                <IconEye /> Read above
+                <IconEye />
+                <span className="text">Read above</span>
               </a>
             </div>
           </li>

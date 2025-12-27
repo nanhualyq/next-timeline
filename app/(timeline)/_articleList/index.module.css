@@ -14,22 +14,30 @@
   padding: 8px;
   background-color: #fff;
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: auto 1fr auto;
   grid-template-rows: repeat(3, auto);
   grid-template-areas:
-    "cover title"
-    "cover summary"
-    "cover others";
+    "cover title title"
+    "cover summary summary"
+    "cover others actions";
   grid-column-gap: 8px;
   grid-row-gap: 12px;
   border: 1px solid gray;
 }
 @media screen and (max-width: 768px) {
   .li {
+    grid-template-columns: auto 1fr 2rem;
     grid-template-areas:
-      "cover title"
-      "cover summary"
-      "others others";
+      "cover title actions"
+      "cover summary actions"
+      "others others actions";
+  }
+  .actions {
+    flex-direction: column;
+    justify-content: end;
+  }
+  .actions :global(.text) {
+    display: none;
   }
 }
 .li:not(:last-child) {
@@ -71,4 +79,9 @@
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
+}
+.actions {
+  grid-area: actions;
+  display: flex;
+  gap: 8px;
 }
