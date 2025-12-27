@@ -1,6 +1,8 @@
 "use client";
 import { countStar, countUnread } from "@/app/actions";
+import { useSidebar } from "@/components/ui/sidebar";
 import { useInterval } from "ahooks";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
@@ -67,5 +69,14 @@ export default function CountStore() {
       immediate: true,
     }
   );
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const { isMobile, openMobile, setOpenMobile } = useSidebar();
+
+  useEffect(() => {
+    if (isMobile && openMobile) {
+      setOpenMobile(false);
+    }
+  }, [pathname, searchParams]);
   return null;
 }
