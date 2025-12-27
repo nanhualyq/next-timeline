@@ -23,7 +23,9 @@ export default async function TimelineLayout({ children, modal }: Props) {
   return (
     <>
       <SidebarProvider>
-        <CountStore />
+        <Suspense fallback="loading...">
+          <CountStore />
+        </Suspense>
         <Sidebar>
           <SidebarHeader>
             <Suspense fallback="loading...">
