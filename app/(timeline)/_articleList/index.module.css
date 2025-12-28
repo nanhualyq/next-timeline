@@ -34,7 +34,7 @@
   }
   .actions {
     flex-direction: column;
-    justify-content: end;
+    justify-content: space-around;
   }
   .actions :global(.text) {
     display: none;
