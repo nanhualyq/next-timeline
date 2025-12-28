@@ -59,8 +59,11 @@ export default function ChannelItem({ channel }: Props) {
       {
         loading: `${action} is in progress...`,
         success: () => {
-          router.replace("/");
-          location.reload();
+          if (isDelete) {
+            router.refresh();
+          } else {
+            router.replace(`?from_channel=${Date.now()}`);
+          }
           return "Successed!";
         },
         error: "Error",
@@ -72,8 +75,7 @@ export default function ChannelItem({ channel }: Props) {
     toast.promise(channelCrawler(channel), {
       loading: "Channel is refresh...",
       success: () => {
-        router.replace(`?channel=${channel.id}`);
-        location.reload();
+        router.replace(`?from_channel=${Date.now()}`);
         return "Successed!";
       },
       error: "Error",

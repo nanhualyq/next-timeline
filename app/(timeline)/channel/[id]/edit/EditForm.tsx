@@ -39,8 +39,7 @@ export default function ChannelEditForm({ channel, save }: Props) {
   const { loading, run } = useRequest(save, {
     manual: true,
     onSuccess() {
-      router.push(`/?channel=${channel.id}`);
-      location.reload();
+      router.refresh();
     },
     onError(error) {
       Swal.fire(error + "");

@@ -51,6 +51,10 @@ export const useCountStore = create<State & Actions>()(
 export default function CountStore() {
   const { fetchUnread, fetchStar, unread } = useCountStore();
   const unreadCount = Object.values(unread).reduce((a, b) => a + b, 0);
+  function refreshCount() {
+    fetchUnread();
+    fetchStar();
+  }
   useEffect(() => {
     if (unreadCount) {
       document.title = `(${unreadCount}) ${document.title.replace(
@@ -59,21 +63,15 @@ export default function CountStore() {
       )}`;
     }
   }, [unreadCount]);
-  useInterval(
-    () => {
-      fetchUnread();
-      fetchStar();
-    },
-    1000 * 60 * 5,
-    {
-      immediate: true,
-    }
-  );
+  useInterval(refreshCount, 1000 * 60 * 5, {
+    immediate: true,
+  });
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { isMobile, openMobile, setOpenMobile } = useSidebar();
 
   useEffect(() => {
+    refreshCount();
     if (isMobile && openMobile) {
       setOpenMobile(false);
     }

@@ -31,12 +31,9 @@ export default function AddForm() {
   const router = useRouter();
   const { loading, run } = useRequest(channelCrawler, {
     manual: true,
-    onSuccess(data) {
+    onSuccess() {
       toast("success");
-      if (data.id) {
-        router.push(`/?channel=${data.id}`);
-        location.reload();
-      }
+      router.refresh();
     },
     onError(error) {
       console.dir(error);

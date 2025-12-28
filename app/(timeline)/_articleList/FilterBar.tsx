@@ -29,8 +29,7 @@ export default function FilterBar() {
 
   async function handleReadAll() {
     await readAllArticles();
-    location.href = "/";
-    location.reload();
+    router.replace(`/?readall=${Date.now()}`);
   }
 
   const options = [
