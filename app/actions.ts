@@ -20,11 +20,8 @@ import { omit } from "lodash-es";
 import z from "zod";
 
 export async function channelCrawler(o: inputChannel) {
-  console.log("channelCrawler start:", o.link);
   const crawler = crawlerFactor(o);
-  await crawler.download();
-  await crawler.saveChannel();
-  await crawler.saveArticles();
+  await crawler.start();
   return {
     success: true,
     id: crawler.channel.id,

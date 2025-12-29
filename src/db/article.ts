@@ -6,8 +6,15 @@ export type ArticleSelect = typeof articleTable.$inferSelect;
 
 export function insertArticles(articles: ArticleInsert[]) {
   return db.transaction(async (tx) => {
+    const results = [];
     for (const article of articles) {
-      await tx.insert(articleTable).values(article).onConflictDoNothing();
+      const res = await tx
+        .insert(articleTable)
+        .values(article)
+        .onConflictDoNothing()
+        .returning();
+      results.push(...res);
     }
+    return results;
   });
 }

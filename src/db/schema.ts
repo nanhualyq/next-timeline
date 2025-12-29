@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import { int, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 export const channelTable = sqliteTable("channel", {
@@ -26,4 +27,16 @@ export const articleTable = sqliteTable("article", {
   read: integer({ mode: "boolean" }).default(false),
   star: integer({ mode: "boolean" }).default(false),
   author: text(),
+});
+
+export const crawlerLogTable = sqliteTable("crawler_log", {
+  id: int().primaryKey(),
+  channel_id: int()
+    .references(() => channelTable.id, {
+      onDelete: "cascade",
+    })
+    .notNull(),
+  timestamp: text().default(sql`(CURRENT_TIMESTAMP)`),
+  status: text({ enum: ["success", "error"] }).notNull(),
+  result: text(),
 });

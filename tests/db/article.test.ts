@@ -191,6 +191,20 @@ describe("article table", () => {
       ).resolves.not.toThrow();
       expect(await db.select().from(articleTable)).toHaveLength(1);
     });
+    it("should return results", async () => {
+      const res = await insertArticles([
+        { channel_id: 1, title: "test", link: "test" },
+        { channel_id: 1, title: "test2", link: "test2" },
+      ]);
+      expect(res).toMatchObject([{ id: 1 }, { id: 2 }]);
+    });
+    it("should return results that are not repeat", async () => {
+      const res = await insertArticles([
+        { channel_id: 1, title: "test", link: "test" },
+        { channel_id: 1, title: "test2", link: "test" },
+      ]);
+      expect(res).toMatchObject([{ id: 1 }]);
+    });
   });
 
   describe("deleteArticlesByChannel", () => {
