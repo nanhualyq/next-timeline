@@ -10,7 +10,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { IconHome, IconPlus, IconStar } from "@tabler/icons-react";
+import {
+  IconHeartRateMonitor,
+  IconHome,
+  IconPlus,
+  IconStar,
+} from "@tabler/icons-react";
 
 export default function SideMenu() {
   const pathname = usePathname();
@@ -55,6 +60,14 @@ export default function SideMenu() {
               <Link href="/channel/add">
                 <IconPlus />
                 <span>Add Feed</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild isActive={pathname === "/status"}>
+              <Link href="/status">
+                <IconHeartRateMonitor />
+                <span>Status</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

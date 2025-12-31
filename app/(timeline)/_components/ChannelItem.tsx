@@ -18,6 +18,7 @@ import {
 import {
   IconDots,
   IconEdit,
+  IconHeartRateMonitor,
   IconRefresh,
   IconTrashX,
   IconWashDryOff,
@@ -105,6 +106,12 @@ export default function ChannelItem({ channel }: Props) {
             <DropdownMenuItem onClick={handleRefresh}>
               <IconRefresh />
               Refresh
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => router.push("/status?channel=" + channel.id)}
+            >
+              <IconHeartRateMonitor />
+              Status
             </DropdownMenuItem>
             <DropdownMenuItem
               className="text-red-500"

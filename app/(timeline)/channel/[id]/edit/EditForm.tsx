@@ -16,6 +16,14 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import Link from "next/link";
 
 type Channel = typeof channelTable.$inferSelect;
 interface Props {
@@ -48,6 +56,17 @@ export default function ChannelEditForm({ channel, save }: Props) {
 
   return (
     <form onSubmit={form.handleSubmit((data) => run(data as Channel))}>
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="/">Home</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>Channel Edit</BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
       <Card>
         <CardContent>
           <FieldGroup>

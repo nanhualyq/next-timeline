@@ -15,6 +15,14 @@ import { toast } from "sonner";
 import Swal from "sweetalert2";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import Link from "next/link";
 
 export default function AddForm() {
   const formSchema = z.object({
@@ -43,6 +51,17 @@ export default function AddForm() {
 
   return (
     <form onSubmit={form.handleSubmit(run)} style={{ padding: "1rem" }}>
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="/">Home</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>Channel Add</BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
       <FieldGroup>
         <Controller
           name="type"
