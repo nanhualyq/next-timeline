@@ -13,7 +13,7 @@ export default abstract class CrawlerBase {
   constructor(public channel: inputChannel) {}
   abstract download(): Promise<unknown>;
   abstract saveChannel(): void;
-  abstract saveArticles(): unknown[];
+  abstract saveArticles(): Promise<unknown[]>;
   async start() {
     const log = {
       status: "success",
