@@ -8,6 +8,13 @@
       "when": 1766135053317,
       "tag": "0000_omniscient_wild_pack",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1767150067693,
+      "tag": "0001_last_diamondback",
+      "breakpoints": true
     }
   ]
 }
