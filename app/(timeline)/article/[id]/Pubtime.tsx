@@ -8,5 +8,9 @@ export default function Pubtime({ time }: Props) {
   if (!time) {
     return null;
   }
-  return <span title={time}>{formatDistance(new Date(), time)}</span>;
+  let isoTime = time;
+  if (time.includes(" ")) {
+    isoTime = time.replace(" ", "T") + "Z";
+  }
+  return <span title={time}>{formatDistance(new Date(), isoTime)}</span>;
 }

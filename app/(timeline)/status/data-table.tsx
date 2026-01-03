@@ -84,7 +84,7 @@ export default function DataTable({ data }: Props) {
               }`}
             >
               {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id}>
+                <TableCell key={cell.id} className="text-wrap whitespace-break-spaces">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </TableCell>
               ))}

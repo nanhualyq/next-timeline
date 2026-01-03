@@ -23,13 +23,15 @@ export default abstract class CrawlerBase {
       await this.download();
       await this.saveChannel();
       const rows = await this.saveArticles();
-      log.result = `${rows.length} rows inserted`;
+      if (rows.length) {
+        log.result = `${rows.length} rows inserted`;
+      }
     } catch (error) {
       log.status = "error";
       log.result = error + "";
       throw error;
     } finally {
-      if (this.channel.id) {
+      if (this.channel.id && log.result) {
         db.insert(crawlerLogTable)
           .values({
             ...log,
