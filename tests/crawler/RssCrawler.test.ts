@@ -3,6 +3,7 @@ import RssCrawler from "../../src/crawler/RssCrawler";
 import { crawlerFactor } from "@/src/crawler/factor";
 import * as articleDb from "@/src/db/article";
 import * as channelDb from "@/src/db/channel";
+import { get } from "lodash-es";
 
 // 模擬 fetch API
 const mockFetch = vi.fn();
@@ -633,6 +634,13 @@ describe("RssCrawler", () => {
         content: { "#text": `<a href="javascript:alert(1)">click</a>` },
       });
       expect(content).toBe(`<a>click</a>`);
+    });
+  });
+
+  describe("parseXml", () => {
+    it("#text is string when it is a number", () => {
+      rssCrawler.parseXml("<title>3670</title>");
+      expect(get(rssCrawler, "xmlObject.title.#text")).toBe("3670");
     });
   });
 });

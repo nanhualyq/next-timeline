@@ -39,6 +39,7 @@ export default class RssCrawler extends CrawlerBase {
     const parser = new XMLParser({
       ignoreAttributes: false,
       alwaysCreateTextNode: true,
+      parseTagValue: false
     });
     this.xmlObject = parser.parse(xml);
   }
