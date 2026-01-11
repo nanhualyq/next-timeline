@@ -304,7 +304,7 @@ describe("RssCrawler", () => {
     });
 
     it("channel_id should equal channel.id", () => {
-      const rssCrawler = new RssCrawler({ id: 1, link: "", type: "rss" });
+      const rssCrawler = new RssCrawler({ id: 1, link: "link", type: "rss" });
       rssCrawler.xmlObject = {
         rss: {
           channel: {
@@ -380,7 +380,7 @@ describe("RssCrawler", () => {
 
   describe("saveChannel", () => {
     it("skip save to db when it has id", async () => {
-      const p = { id: 1, type: "rss", link: "" };
+      const p = { id: 1, type: "rss", link: "link" };
       const factory = crawlerFactor(p);
       await factory.saveChannel();
       expect(factory.channel).toBe(p);
@@ -404,12 +404,12 @@ describe("RssCrawler", () => {
 
   describe("saveArticles", () => {
     it("abort when it is empty channel", async () => {
-      const p = { type: "rss", link: "" };
+      const p = { type: "rss", link: "link" };
       const factory = crawlerFactor(p);
       expect(() => factory.saveArticles()).toThrow();
     });
     it("save to db when it is not empty channel", async () => {
-      const p = { id: 99, type: "rss", link: "" };
+      const p = { id: 99, type: "rss", link: "link" };
       const factory = crawlerFactor(p);
       const spy = vi.spyOn(articleDb, "insertArticles");
       await factory.saveArticles();

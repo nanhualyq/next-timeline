@@ -3,12 +3,13 @@ import { int, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 export const channelTable = sqliteTable("channel", {
   id: int().primaryKey(),
-  type: text({ enum: ["rss"] }).notNull(),
+  type: text({ enum: ["rss", 'html'] }).notNull(),
   title: text().notNull(),
   link: text().notNull().unique(),
   description: text(),
   category: text(),
   icon: text(),
+  items_code: text(),
 });
 
 export const articleTable = sqliteTable("article", {

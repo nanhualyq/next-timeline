@@ -2,15 +2,16 @@ import { db } from "../db";
 import { channelTable, crawlerLogTable } from "../db/schema";
 
 type Channel = typeof channelTable.$inferSelect;
-type EmptyChannel = {
-  id?: number;
-  type: string;
-  link: string;
-};
+type EmptyChannel = Partial<Channel>;
+
 export type inputChannel = Channel | EmptyChannel;
 
 export default abstract class CrawlerBase {
-  constructor(public channel: inputChannel) {}
+  constructor(public channel: inputChannel) {
+    if (!this.channel.link) {
+      throw new Error("Channel link is required");
+    }
+  }
   abstract download(): Promise<unknown>;
   abstract saveChannel(): void;
   abstract saveArticles(): Promise<unknown[]>;

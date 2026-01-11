@@ -5,11 +5,9 @@ import { createInsertSchema } from "drizzle-zod";
 import { articleTable, channelTable } from "../db/schema";
 import { formatISO } from "date-fns";
 import { JSDOM } from "jsdom";
-import { db } from "../db";
 import { insertArticles } from "../db/article";
 import { setGlobalDispatcher, Agent } from "undici";
 import sanitizeHtml from "sanitize-html";
-import { eq } from "drizzle-orm";
 import { addOrGetChannel } from "../db/channel";
 
 // Set the global connection timeout to 20 seconds
@@ -29,7 +27,7 @@ export default class RssCrawler extends CrawlerBase {
   xmlObject: unknown;
 
   async download() {
-    const xml = await fetch(this.channel.link, {
+    const xml = await fetch(this.channel.link!, {
       signal: AbortSignal.timeout(20_000),
     }).then((response) => response.text());
     this.parseXml(xml);
@@ -39,7 +37,7 @@ export default class RssCrawler extends CrawlerBase {
     const parser = new XMLParser({
       ignoreAttributes: false,
       alwaysCreateTextNode: true,
-      parseTagValue: false
+      parseTagValue: false,
     });
     this.xmlObject = parser.parse(xml);
   }
@@ -60,7 +58,7 @@ export default class RssCrawler extends CrawlerBase {
   }
 
   async parseFavicon() {
-    const channelLink = new URL(this.channel.link).origin;
+    const channelLink = new URL(this.channel.link!).origin;
     const articleLink = this.parseArticleLink(this.items[0]);
     const urls = [channelLink, articleLink];
     for (const url of urls) {
@@ -105,7 +103,7 @@ export default class RssCrawler extends CrawlerBase {
     for (const item of this.items) {
       const content = this.parseArticleContent(item);
       const article = articleSchema.parse({
-        channel_id: this.channel.id || 0,
+        channel_id: this.channel.id,
         title: get(item, "title.#text"),
         link: this.parseArticleLink(item),
         summary: this.parseArticleSummay(item, content),

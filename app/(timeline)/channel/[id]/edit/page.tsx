@@ -1,7 +1,7 @@
 import { db } from "@/src/db";
-import ChannelEditForm from "./EditForm";
 import { channelTable } from "@/src/db/schema";
 import { eq } from "drizzle-orm";
+import EditForm from "../../add/EditForm";
 
 interface Props {
   params: {
@@ -21,5 +21,5 @@ export default async function ChannelEdit({ params }: Props) {
     await db.update(channelTable).set(rest).where(eq(channelTable.id, +id));
   }
 
-  return <ChannelEditForm channel={res[0]} save={save} />;
+  return <EditForm channel={res[0]} onSubmit={save} />;
 }
