@@ -14,44 +14,30 @@
   padding: 8px;
   background-color: #fff;
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr;
   grid-template-rows: repeat(3, auto);
   grid-template-areas:
-    "cover title title"
-    "cover summary summary"
-    "cover others actions";
+    "cover title"
+    "cover summary"
+    "others others";
   grid-column-gap: 8px;
   grid-row-gap: 12px;
   border: 1px solid gray;
 }
-@media screen and (max-width: 768px) {
-  .li {
-    grid-template-columns: auto 1fr 2rem;
-    grid-template-areas:
-      "cover title actions"
-      "cover summary actions"
-      "others others actions";
-  }
-  .actions {
-    flex-direction: column;
-    justify-content: space-around;
-  }
-  .actions :global(.text) {
-    display: none;
-  }
+.li[data-read] {
+  color: gray;
+  border-color: #ddd;
+}
+.li[data-star] {
+  border-color: gold;
+}
+.li[data-active] {
+  border-color: black;
+  background-color: #eee;
 }
 .li:not(:last-child) {
   margin-bottom: 1rem;
 }
-.li-read {
-  color: gray;
-  border-color: #ddd;
-}
-.li_active {
-  border-color: black;
-  background-color: #eee;
-}
-
 .cover {
   grid-area: cover;
   width: 128px;
@@ -80,8 +66,13 @@
   gap: 8px;
   flex-wrap: wrap;
 }
-.actions {
-  grid-area: actions;
-  display: flex;
-  gap: 8px;
+dialog.others {
+  max-width: 90%;
+  background-color: #fff;
+  border: 1px solid #000;
+  margin: auto;
+  padding: 1rem;
+  flex-direction: column-reverse;
+  gap: 1rem;
+  bottom: 1rem;
 }
