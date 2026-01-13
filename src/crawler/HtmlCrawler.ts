@@ -45,6 +45,7 @@ export default class HtmlCrawler extends CrawlerBase {
     const articleSchema = createInsertSchema(articleTable);
     for (const item of articles) {
       item.channel_id = this.channel.id;
+      item.pub_time ||= new Date().toISOString();
       articleSchema.parse(item);
     }
     return articles;
