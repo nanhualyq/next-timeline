@@ -31,6 +31,7 @@ export default class HtmlCrawler extends CrawlerBase {
     if (res) {
       this.channel = res;
     }
+    this.updateIcon();
   }
 
   parseArticles() {

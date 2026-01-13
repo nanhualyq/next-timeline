@@ -37,7 +37,6 @@ export default function ArticleList(props: Props) {
   const params = useSearchParams();
   const { plusUnread } = useCountStore();
   const { initStar, toggleStar, starMap } = useStarStore();
-  const { sm } = useResponsive();
 
   const { data, loadingMore, mutate, loading } =
     useInfiniteScroll<ArticleListReturn>(

@@ -3,6 +3,7 @@ import { channelTable } from "@/src/db/schema";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   channelCrawler,
+  channelIconUpdater,
   deleteArticlesByChannel,
   deleteChannel,
 } from "@/app/actions";
@@ -19,6 +20,7 @@ import {
   IconDots,
   IconEdit,
   IconHeartRateMonitor,
+  IconIcons,
   IconRefresh,
   IconTrashX,
   IconWashDryOff,
@@ -82,6 +84,16 @@ export default function ChannelItem({ channel }: Props) {
       error: "Error",
     });
   }
+  function handleUpdateIcon() {
+    toast.promise(channelIconUpdater(channel), {
+      loading: "Channel icon is updating...",
+      success: () => {
+        router.refresh();
+        return "Successed!";
+      },
+      error: "Error",
+    });
+  }
 
   return (
     <SidebarMenuItem key={channel.id}>
@@ -112,6 +124,10 @@ export default function ChannelItem({ channel }: Props) {
             >
               <IconHeartRateMonitor />
               Status
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleUpdateIcon}>
+              <IconIcons />
+              Update Icon
             </DropdownMenuItem>
             <DropdownMenuItem
               className="text-red-500"

@@ -28,6 +28,15 @@ export async function channelCrawler(o: inputChannel) {
   };
 }
 
+export async function channelIconUpdater(o: inputChannel) {
+  const crawler = crawlerFactor(o);
+  await crawler.updateIcon();
+  return {
+    success: true,
+    id: crawler.channel.id,
+  };
+}
+
 export async function channelsCrawler() {
   const channels = await db.select().from(channelTable);
   for (const channel of channels) {

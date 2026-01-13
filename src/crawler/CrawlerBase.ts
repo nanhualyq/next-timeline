@@ -1,5 +1,7 @@
+import { eq } from "drizzle-orm";
 import { db } from "../db";
-import { channelTable, crawlerLogTable } from "../db/schema";
+import { articleTable, channelTable, crawlerLogTable } from "../db/schema";
+import { JSDOM } from "jsdom";
 
 type Channel = typeof channelTable.$inferSelect;
 type EmptyChannel = Partial<Channel>;
@@ -40,6 +42,40 @@ export default abstract class CrawlerBase {
           })
           .catch(console.error);
       }
+    }
+  }
+  async parseFavicon(articleLink = "") {
+    const channelLink = new URL(this.channel.link!).origin;
+    const urls = [channelLink, articleLink];
+    for (const url of urls) {
+      if (!url) {
+        continue;
+      }
+      const html = await fetch(url).then((r) => r.text());
+      const icon = new JSDOM(html).window.document
+        .querySelector(`link[rel~="icon"]`)
+        ?.getAttribute("href");
+      if (icon) {
+        return new URL(icon, url).href;
+      }
+    }
+    if (articleLink) {
+      return new URL(articleLink).origin + "/favicon.ico";
+    }
+    return "";
+  }
+  async updateIcon() {
+    const articles = await db
+      .select()
+      .from(articleTable)
+      .where(eq(articleTable.channel_id, this.channel.id!))
+      .limit(1);
+    const icon = await this.parseFavicon(articles[0]?.link);
+    if (icon) {
+      await db
+        .update(channelTable)
+        .set({ icon })
+        .where(eq(channelTable.id, this.channel.id!));
     }
   }
 }

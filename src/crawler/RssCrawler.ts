@@ -57,28 +57,6 @@ export default class RssCrawler extends CrawlerBase {
     });
   }
 
-  async parseFavicon() {
-    const channelLink = new URL(this.channel.link!).origin;
-    const articleLink = this.parseArticleLink(this.items[0]);
-    const urls = [channelLink, articleLink];
-    for (const url of urls) {
-      if (!url) {
-        continue;
-      }
-      const html = await fetch(url).then((r) => r.text());
-      const icon = parseHtml(html)
-        .querySelector(`link[rel~="icon"]`)
-        ?.getAttribute("href");
-      if (icon) {
-        return new URL(icon, url).href;
-      }
-    }
-    if (articleLink) {
-      return new URL(articleLink).origin + "/favicon.ico";
-    }
-    return "";
-  }
-
   get items() {
     const items = get(this.xmlObject, "rss.channel.item");
     const entries = get(this.xmlObject, "feed.entry");
@@ -174,11 +152,11 @@ export default class RssCrawler extends CrawlerBase {
       return;
     }
     const channel = this.parseChannel();
-    channel.icon = await this.parseFavicon();
     const res = await addOrGetChannel(channel);
     if (res) {
       this.channel = res;
     }
+    this.updateIcon();
   }
   saveArticles() {
     if (!this.channel.id) {
