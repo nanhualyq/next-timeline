@@ -37,7 +37,8 @@ export const useCountStore = create<State & Actions>()(
     },
     plusUnread: (id, offset) => {
       set((state) => {
-        state.unread[id] = (state.unread[id] || 0) + offset;
+        const newCount = (state.unread[id] || 0) + offset;
+        state.unread[id] = Math.max(newCount, 0);
       });
     },
     plusStar: (offset) => {
