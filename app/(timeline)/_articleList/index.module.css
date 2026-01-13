@@ -63,16 +63,6 @@
   grid-area: others;
   display: flex;
   align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-dialog.others {
-  max-width: 90%;
-  background-color: #fff;
-  border: 1px solid #000;
-  margin: auto;
-  padding: 1rem;
-  flex-direction: column-reverse;
   gap: 1rem;
-  bottom: 1rem;
+  flex-wrap: wrap;
 }

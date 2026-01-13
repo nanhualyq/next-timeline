@@ -170,25 +170,6 @@ export default function ArticleList(props: Props) {
     readArticles(ids);
   }
 
-  const [menuIndex, setMenuIndex] = useState(-1);
-  useEventListener(
-    "click",
-    (e) => {
-      if (menuIndex !== -1) {
-        if (
-          e.target instanceof Element &&
-          !e.target?.closest(`dialog.${styles.others}`)
-        ) {
-          e.stopPropagation();
-          setMenuIndex(-1);
-        }
-      }
-    },
-    {
-      capture: true,
-    }
-  );
-
   if (!loading && (!data || !data.list.length)) {
     return (
       <Empty>
@@ -206,7 +187,6 @@ export default function ArticleList(props: Props) {
     <ul className={styles.ul} ref={ulRef}>
       {data?.list.map((item, index) => {
         const { article, channel } = item;
-        const ToolsBox = menuIndex === index ? "dialog" : "div";
         return (
           <li
             key={article.id}
@@ -217,12 +197,6 @@ export default function ArticleList(props: Props) {
             onClick={() => {
               setActive(index);
               viewArticle(index);
-            }}
-            onContextMenu={(e) => {
-              e.preventDefault();
-              if (!sm) {
-                setMenuIndex(index);
-              }
             }}
           >
             {article.cover && (
@@ -240,27 +214,26 @@ export default function ArticleList(props: Props) {
               </a>
             </div>
             <div className={styles.summary}>{article.summary}</div>
-            {(sm || menuIndex === index) && (
-              <ToolsBox
-                className={styles.others}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setMenuIndex(-1);
-                }}
+            <div
+              className={`${styles.others} flex-row-reverse sm:flex-row`}
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              <StarToggle article={article} />
+              <a
+                onClick={() => readAbove(index)}
+                className="flex gap-1 items-center"
               >
-                <StarToggle article={article} />
-                <a
-                  onClick={() => readAbove(index)}
-                  className="flex gap-1 items-center"
-                >
-                  <IconEye />
-                  <span className="text">Read above</span>
-                </a>
-                <Pubtime time={article.pub_time} />
-                <ChannelTitle channel={channel!} />
-                {article.author && <span>by {article.author}</span>}
-              </ToolsBox>
-            )}
+                <IconEye />
+                <span className="hidden sm:block">Read above</span>
+              </a>
+              <Pubtime time={article.pub_time} />
+              <ChannelTitle channel={channel!} />
+              {article.author && (
+                <span className="hidden sm:block">by {article.author}</span>
+              )}
+            </div>
           </li>
         );
       })}
